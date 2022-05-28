@@ -1,0 +1,2 @@
+# nooshtype
+A typing game.
