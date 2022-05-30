@@ -1,37 +1,9 @@
-.game {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  height: 100vh;
-  width: 100vw;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-}
-
-.game .gamemodes {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  margin-bottom: 20px;
-  gap: 10px;
-}
-
-.game .words_wrapper {
-  width: 90%;
-  max-width: 1200px;
+.words_wrapper {
   height: 110px;
   overflow: hidden;
 }
 
-.game .words_wrapper .caret {
+.words_wrapper .caret {
   position: absolute;
   height: 2rem;
   width: 3px;
@@ -41,7 +13,7 @@
   transition: all 0.2s ease 0s;
 }
 
-.game .words_wrapper .caret.blink {
+.words_wrapper .caret.blink {
   -webkit-animation: caretFlashSmooth 1s infinite;
           animation: caretFlashSmooth 1s infinite;
 }

@@ -16,15 +16,12 @@ import {
 } from "../Utils/utils";
 
 export default function Game() {
-  const caretRef = useRef();
   const [words, setWords] = useState([]);
   const [wordsLoaded, setWordsLoaded] = useState(false);
 
   const [mode, setMode] = useState("words");
-  const [currInput, setCurrInput] = useState("");
   const [currWordIndex, setCurrWordIndex] = useState(undefined);
   const [currWordCharIndex, setCurrWordCharIndex] = useState(undefined);
-  const [currIndex, setCurrIndex] = useState(0);
 
   const [caretPosTop, setCaretPosTop] = useState(undefined);
   const [caretPosLeft, setCaretPosLeft] = useState(undefined);
@@ -36,9 +33,6 @@ export default function Game() {
   const [printFrom, setPrintFrom] = useState(0);
   const [currLine, setCurrLine] = useState(1);
   const [visibleLine, setVisibleLine] = useState(1);
-  const [prevLine, setPrevLine] = useState(1);
-
-  const [firstLineLen, setFirstLineLen] = useState(undefined);
 
   const wordsContainer = useRef(null);
 
@@ -59,13 +53,8 @@ export default function Game() {
   const scrollWords = () => {
     const firstLineEndIndex = getEndOfFirstLine(wordsWrapState, printFrom);
     setPrintFrom(firstLineEndIndex);
-    setPrevLine(currLine);
     setCurrLine(currLine + 1);
   };
-
-  useEffect(() => {
-    console.log("firstlinelen", firstLineLen);
-  }, [firstLineLen]);
 
   const updateCaret = () => {
     const currentWordNodeList = document
@@ -109,10 +98,6 @@ export default function Game() {
     clearTimeout(doit);
     doit = setTimeout(adjustNewLineWords, 100);
   };
-
-  useEffect(() => {
-    if (caretPosTop != undefined) console.log("caret pos top changed");
-  }, [caretPosTop]);
 
   useEffect(() => {
     let newWords = [];
@@ -236,43 +221,35 @@ export default function Game() {
         setCurrWordCharIndex(currWordCharIndex + 1);
       }
     }
-
-    // CARET BLINK: when idle, blink caret
   });
 
   if (words.length == 0) return;
   return (
-    <div className="game">
-      <div className="gamemodes">
-        <button onClick={() => setMode("words")}>words</button>
-        <button onClick={() => setMode("quotes")}>quotes</button>
-      </div>
-      <div className="words_wrapper">
-        <div
-          className={`caret ${caretState}`}
-          style={{ top: `${caretPosTop}px`, left: `${caretPosLeft}px` }}
-        ></div>
-        <div id="words" className="words" ref={wordsContainer}>
-          {words.slice(printFrom, words.length).map((word, index) => {
-            index = index + printFrom;
-            return (
-              <div
-                className={`word ${wordsCorrectness[index]} ${
-                  index == currWordIndex ? "active" : ""
-                }`}
-                key={index}
-              >
-                {word.map((letter, index) => {
-                  return (
-                    <span className={`letter ${letter.state}`} key={index}>
-                      {letter.letter}
-                    </span>
-                  );
-                })}
-              </div>
-            );
-          })}
-        </div>
+    <div className="words_wrapper">
+      <div
+        className={`caret ${caretState}`}
+        style={{ top: `${caretPosTop}px`, left: `${caretPosLeft}px` }}
+      ></div>
+      <div id="words" className="words" ref={wordsContainer}>
+        {words.slice(printFrom, words.length).map((word, index) => {
+          index = index + printFrom;
+          return (
+            <div
+              className={`word ${wordsCorrectness[index]} ${
+                index == currWordIndex ? "active" : ""
+              }`}
+              key={index}
+            >
+              {word.map((letter, index) => {
+                return (
+                  <span className={`letter ${letter.state}`} key={index}>
+                    {letter.letter}
+                  </span>
+                );
+              })}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
