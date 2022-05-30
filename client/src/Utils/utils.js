@@ -56,3 +56,73 @@ export const findNumBlanks = (charArr) => {
   }
   return total;
 };
+
+/**
+ * Finds if an element was wrapped to next line
+ * @param {*} previous
+ * @param {*} current
+ * @returns
+ */
+const isWrapping = (next, current) =>
+  next.getBoundingClientRect().top !== current.getBoundingClientRect().top;
+
+/**
+ *
+ * container -> div with words
+ */
+export const getWordsWrappingStates = (
+  container,
+  startIndex,
+  wordsWrappingStates
+) => {
+  const wordsStates = [];
+  for (let i = 0; i < startIndex; i++) {
+    wordsStates.push(wordsWrappingStates[i]);
+  }
+
+  for (let i = 0; i < container.children.length - 1; i++) {
+    const next = container.children[i + 1];
+    const current = container.children[i];
+
+    const wraps = isWrapping(next, current);
+    wordsStates.push(wraps);
+  }
+  wordsStates.push(false);
+  return wordsStates;
+};
+
+const getWordFromArr = (charArr) => {
+  let word = "";
+  for (let i = 0; i < charArr.length; i++) {
+    word += charArr[i].innerText;
+  }
+  return word;
+};
+
+export const getEndOfFirstLine = (wordsWrapState, startIndex) => {
+  // 2->
+  for (var i = startIndex; i < wordsWrapState.length; i++) {
+    if (wordsWrapState[i]) {
+      return i + 1;
+    }
+  }
+};
+
+/**
+ * Gets the count until the first wrapping element
+ */
+export const getLengthTillWrapping = (thWrapping, words) => {
+  let index = 0;
+  thWrapping = thWrapping - 3;
+  while (index < words.length) {
+    if (words[index].isWrapping) {
+      if (thWrapping == 0) {
+        break;
+      } else {
+        thWrapping--;
+      }
+    }
+    index++;
+  }
+  return index;
+};

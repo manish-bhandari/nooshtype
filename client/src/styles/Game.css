@@ -1,0 +1,118 @@
+.game {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.game .gamemodes {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.game .words_wrapper {
+  width: 90%;
+  max-width: 1200px;
+  height: 110px;
+  overflow: hidden;
+}
+
+.game .words_wrapper .caret {
+  position: absolute;
+  height: 2rem;
+  width: 3px;
+  border-radius: 2px;
+  background-color: var(--main-color);
+  -webkit-transition: all 0.2s ease 0s;
+  transition: all 0.2s ease 0s;
+}
+
+.game .words_wrapper .caret.blink {
+  -webkit-animation: caretFlashSmooth 1s infinite;
+          animation: caretFlashSmooth 1s infinite;
+}
+
+@-webkit-keyframes caretFlashSmooth {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes caretFlashSmooth {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.words {
+  color: var(--text-color-none);
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  padding-bottom: 1em;
+  -webkit-transition: all 0.25s ease 0s;
+  transition: all 0.25s ease 0s;
+  margin-left: unset;
+}
+
+.words .wrapping {
+  background-color: red;
+}
+
+.words .word {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  border-bottom: 2px solid transparent;
+  line-height: 1rem;
+  margin: 0.4rem;
+}
+
+.words .word.incorrect {
+  border-bottom: 2px solid var(--text-color-incorrect);
+  text-shadow: 1px 0 0 var(--bg-color), -1px 0 0 var(--bg-color), 0 1px 0 var(--bg-color), 1px 1px 0 var(--bg-color), -1px 1px 0 var(--bg-color);
+}
+
+.words .word .correct {
+  color: var(--text-color-correct);
+}
+
+.words .word .incorrect {
+  color: var(--text-color-incorrect);
+}
+
+.words .word .extra {
+  color: var(--text-color-extra);
+}
+
+.words .word span {
+  font-size: 24px;
+  padding: 0.2rem 0.08rem;
+}
+/*# sourceMappingURL=Game.css.map */
