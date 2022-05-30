@@ -8,6 +8,8 @@
   --text-color-incorrect: #eb4b5b;
   --text-color-extra: #98333f;
 
+  --text-color-disabled: rgb(42, 46, 47);
+
   --main-color: rgb(78, 245, 217);
 }
 

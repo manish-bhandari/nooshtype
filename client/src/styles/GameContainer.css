@@ -32,24 +32,52 @@
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
+  font-size: 15px;
+  gap: 2px;
   color: var(--text-color-none);
-  margin: 0 10px;
-  margin-bottom: 30px;
+  margin: 0 50px 30px 10px;
+}
+
+.settings .rightside .setting {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
 }
 
 .settings .setting {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
   gap: 10px;
-  cursor: pointer;
+  margin: 0;
 }
 
 .settings .setting :hover {
+  cursor: pointer;
   color: var(--text-color-correct);
 }
 
 .settings .setting .active {
   color: var(--main-color);
+}
+
+.settings .setting .disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  cursor: default;
 }
 /*# sourceMappingURL=GameContainer.css.map */
