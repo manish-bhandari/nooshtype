@@ -13,18 +13,41 @@ const extras = ["punctuations", "numbers"];
 export default function GameContainer() {
   const [gamemode, setGamemode] = useState("time");
   const [option, setOption] = useState(undefined);
+
+  const [configs, setConfigs] = useState({
+    gamemode: gamemode,
+    option: option,
+  });
+
   const [extraOptions, setExtraOptions] = useState([]);
 
   const [extraEnabled, setExtraEnabled] = useState(true);
 
-  useEffect(() => {}, [option]);
   useEffect(() => {
-    setOption(options[gamemode][0]);
+    setConfigs({
+      gamemode: gamemode,
+      option: option,
+      extraOptions: extraOptions,
+      extraEnabled: extraEnabled,
+    });
+  }, [option, extraOptions, extraEnabled]);
+
+  useEffect(() => {
+    if (option !== options[gamemode][0]) {
+      setOption(options[gamemode][0]);
+    } else {
+      setConfigs({
+        gamemode: gamemode,
+        option: option,
+        extraOptions: extraOptions,
+        extraEnable: extraEnabled,
+      });
+    }
     setExtraOptions([]);
     setExtraEnabled(gamemode != "quotes");
   }, [gamemode]);
 
-  if (!option) return;
+  useEffect(() => {}, [option]);
 
   const updateExtras = (extra) => {
     // if already exists, remove it
@@ -34,6 +57,8 @@ export default function GameContainer() {
       setExtraOptions([...extraOptions, extra]);
     }
   };
+
+  if (option == undefined) return <></>;
 
   return (
     <div className="game">
@@ -52,12 +77,13 @@ export default function GameContainer() {
           </div>
           <div className="rightside">
             <div className="extras setting">
-              {extras.map((item) => (
+              {extras.map((item, index) => (
                 <div
                   className={`addition ${
                     extraOptions.includes(item) ? "active" : ""
                   } ${!extraEnabled ? "disabled" : ""}`}
                   onClick={() => updateExtras(item)}
+                  key={index}
                 >
                   {item}
                 </div>
@@ -76,7 +102,7 @@ export default function GameContainer() {
             </div>
           </div>
         </div>
-        <Game />
+        <Game configs={configs} />
       </div>
     </div>
   );

@@ -14,12 +14,30 @@ import {
   getEndOfFirstLine,
   getWordsWrappingStates,
 } from "../Utils/utils";
+import { getWords } from "../Utils/Words";
 
-export default function Game() {
+export default function Game({ configs }) {
+  useEffect(() => {
+    const mywords = getWords(configs);
+    setWords(
+      mywords.map((word) =>
+        word.split("").map((letter) => {
+          return { letter: letter, state: "none" };
+        })
+      )
+    );
+    setWordsWrapState(new Array(mywords.length).fill(false));
+    setWordsCorrectness(new Array(mywords.length).fill(""));
+    setCurrWordCharIndex(0);
+    setCurrWordIndex(0);
+    setOpacity(0);
+  }, [configs]);
+
+  const [opacity, setOpacity] = useState(undefined);
+
   const [words, setWords] = useState([]);
   const [wordsLoaded, setWordsLoaded] = useState(false);
 
-  const [mode, setMode] = useState("words");
   const [currWordIndex, setCurrWordIndex] = useState(undefined);
   const [currWordCharIndex, setCurrWordCharIndex] = useState(undefined);
 
@@ -35,6 +53,17 @@ export default function Game() {
   const [visibleLine, setVisibleLine] = useState(1);
 
   const wordsContainer = useRef(null);
+
+  useEffect(() => {
+    if (configs.option == undefined || opacity >= 1) return;
+
+    const timer = setInterval(() => {
+      // console.log(opacity);
+      setOpacity(opacity + 0.1);
+    }, 50);
+
+    return () => clearInterval(timer);
+  }, [opacity]);
 
   useEffect(() => {
     if (currWordCharIndex == undefined) {
@@ -100,24 +129,6 @@ export default function Game() {
   };
 
   useEffect(() => {
-    let newWords = [];
-    if (mode === "words") {
-      newWords = randomWords({ exactly: 50 }).map((word) =>
-        word.split("").map((letter) => {
-          return { letter: letter, state: "none" };
-        })
-      );
-    } else if (mode === "quotes") {
-      words = article([1]).split(" ");
-    }
-    setWords(newWords);
-    setWordsWrapState(new Array(newWords.length).fill(false));
-    setWordsCorrectness(new Array(newWords.length).fill(""));
-    setCurrWordCharIndex(0);
-    setCurrWordIndex(0);
-  }, [mode]);
-
-  useEffect(() => {
     updateCaret();
   }, [currWordIndex, currWordCharIndex]);
 
@@ -126,10 +137,6 @@ export default function Game() {
       setWordsLoaded(true);
     }
   }, [words]);
-
-  if (mode === "words") {
-  } else if (mode === "quotes") {
-  }
 
   useKeyPress((key) => {
     const letterWidth = 17.24;
@@ -225,7 +232,7 @@ export default function Game() {
 
   if (words.length == 0) return;
   return (
-    <div className="words_wrapper">
+    <div className="words_wrapper" style={{ opacity: `${opacity}` }}>
       <div
         className={`caret ${caretState}`}
         style={{ top: `${caretPosTop}px`, left: `${caretPosLeft}px` }}

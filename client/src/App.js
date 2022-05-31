@@ -6,7 +6,7 @@ import Game from "./pages/Game";
 function App() {
   return (
     <Router>
-      {/* <Stars /> */}
+      <Stars />
       <Routes>
         <Route path="/" element={<GameContainer />}></Route>
       </Routes>
