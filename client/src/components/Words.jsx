@@ -3,7 +3,7 @@ import styled from "styled-components";
 import randomWords from "random-words";
 import { article } from "https://unpkg.com/txtgen/dist/txtgen.esm.js";
 import useKeyPress from "../Utils/useKeyPress";
-import "../styles/Game.css";
+import "../styles/Words.css";
 
 import {
   findCurrentCharIndex,
@@ -16,7 +16,7 @@ import {
 } from "../Utils/utils";
 import { getWords } from "../Utils/Words";
 
-export default function Game({ configs }) {
+export default function Words({ configs }) {
   useEffect(() => {
     const mywords = getWords(configs);
     setWords(
@@ -261,83 +261,3 @@ export default function Game({ configs }) {
     </div>
   );
 }
-
-const GameComponent = styled.div`
-  display: flex;
-  height: 100vh;
-  width: 100vw;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  .gamemodes {
-    display: flex;
-    margin-bottom: 20px;
-    gap: 10px;
-  }
-  .words_wrapper {
-    width: 60%;
-    height: 110px;
-    overflow: hidden;
-    .caret {
-      position: absolute;
-      height: 2rem;
-      width: 3px;
-      border-radius: 2px;
-      background-color: var(--main-color);
-      transition: all 0.2s ease 0s;
-
-      &.blink {
-        animation: caretFlashSmooth 1s infinite;
-      }
-      @keyframes caretFlashSmooth {
-        0%,
-        100% {
-          opacity: 0;
-        }
-
-        50% {
-          opacity: 1;
-        }
-      }
-    }
-  }
-`;
-
-const Words = styled.div`
-  color: var(--text-color-none);
-  font-size: 1.5rem;
-  line-height: 1.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  padding-bottom: 1em;
-  transition: all 0.25s ease 0s;
-  margin-left: unset;
-  .wrapping {
-    background-color: red;
-  }
-  .word {
-    display: flex;
-    border-bottom: 2px solid transparent;
-    line-height: 1rem;
-    margin: 0.4rem;
-    &.incorrect {
-      border-bottom: 2px solid var(--text-color-incorrect);
-      text-shadow: 1px 0 0 var(--bg-color), -1px 0 0 var(--bg-color),
-        0 1px 0 var(--bg-color), 1px 1px 0 var(--bg-color),
-        -1px 1px 0 var(--bg-color);
-    }
-    .correct {
-      color: var(--text-color-correct);
-    }
-    .incorrect {
-      color: var(--text-color-incorrect);
-    }
-    .extra {
-      color: var(--text-color-extra);
-    }
-    span {
-      font-size: 24px;
-      padding: 0.2rem 0.08rem;
-    }
-  }
-`;

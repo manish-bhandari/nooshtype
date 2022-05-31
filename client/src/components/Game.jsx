@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Game from "../pages/Game";
-import "../styles/GameContainer.css";
+import Words from "./Words";
+import "../styles/Game.css";
 
 const gamemodes = ["time", "words", "quotes"];
 const options = {
@@ -10,7 +10,7 @@ const options = {
 };
 const extras = ["punctuations", "numbers"];
 
-export default function GameContainer() {
+export default function Game() {
   const [gamemode, setGamemode] = useState("time");
   const [option, setOption] = useState(undefined);
 
@@ -102,7 +102,7 @@ export default function GameContainer() {
             </div>
           </div>
         </div>
-        <Game configs={configs} />
+        <Words configs={configs} />
       </div>
     </div>
   );

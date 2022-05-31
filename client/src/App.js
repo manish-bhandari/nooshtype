@@ -1,14 +1,13 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import GameContainer from "./components/GameContainer";
 import Stars from "./components/Stars";
-import Game from "./pages/Game";
+import Game from "./components/Game";
 
 function App() {
   return (
     <Router>
       <Stars />
       <Routes>
-        <Route path="/" element={<GameContainer />}></Route>
+        <Route path="/" element={<Game />}></Route>
       </Routes>
     </Router>
   );

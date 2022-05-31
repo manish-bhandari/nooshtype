@@ -1,0 +1,90 @@
+.words_wrapper {
+  height: 110px;
+  overflow: hidden;
+}
+
+.words_wrapper .caret {
+  position: absolute;
+  height: 2rem;
+  width: 1px;
+  border-radius: 2px;
+  background-color: var(--main-color);
+  -webkit-transition: all 0.2s ease 0s;
+  transition: all 0.2s ease 0s;
+}
+
+.words_wrapper .caret.blink {
+  -webkit-animation: caretFlashSmooth 1s infinite;
+          animation: caretFlashSmooth 1s infinite;
+}
+
+@-webkit-keyframes caretFlashSmooth {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes caretFlashSmooth {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.words {
+  color: var(--text-color-none);
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  padding-bottom: 1em;
+  -webkit-transition: all 0.25s ease 0s;
+  transition: all 0.25s ease 0s;
+  margin-left: unset;
+}
+
+.words .wrapping {
+  background-color: red;
+}
+
+.words .word {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  border-bottom: 2px solid transparent;
+  line-height: 1rem;
+  margin: 0.4rem;
+}
+
+.words .word.incorrect {
+  border-bottom: 2px solid var(--text-color-incorrect);
+  text-shadow: 1px 0 0 var(--bg-color), -1px 0 0 var(--bg-color), 0 1px 0 var(--bg-color), 1px 1px 0 var(--bg-color), -1px 1px 0 var(--bg-color);
+}
+
+.words .word .correct {
+  color: var(--text-color-correct);
+}
+
+.words .word .incorrect {
+  color: var(--text-color-incorrect);
+}
+
+.words .word .extra {
+  color: var(--text-color-extra);
+}
+
+.words .word span {
+  font-size: 24px;
+  padding: 0.2rem 0.08rem;
+}
+/*# sourceMappingURL=Words.css.map */
