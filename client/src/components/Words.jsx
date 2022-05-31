@@ -16,7 +16,35 @@ import {
 } from "../Utils/utils";
 import { getWords } from "../Utils/Words";
 
-export default function Words({ configs }) {
+export default function Words({
+  configs,
+  startGame,
+  endGame,
+  currWordIndex,
+  setCurrWordIndex,
+}) {
+  const [opacity, setOpacity] = useState(undefined);
+
+  const [words, setWords] = useState([]);
+  const [wordsLoaded, setWordsLoaded] = useState(false);
+
+  const [currWordCharIndex, setCurrWordCharIndex] = useState(undefined);
+
+  const [caretPosTop, setCaretPosTop] = useState(undefined);
+  const [caretPosLeft, setCaretPosLeft] = useState(undefined);
+
+  const [caretState, setCaretState] = useState("blink");
+  const [wordsWrapState, setWordsWrapState] = useState(undefined);
+  const [wordsCorrectness, setWordsCorrectness] = useState(undefined);
+
+  const [printFrom, setPrintFrom] = useState(0);
+  const [currLine, setCurrLine] = useState(1);
+  const [visibleLine, setVisibleLine] = useState(1);
+
+  const wordsContainer = useRef(null);
+
+  const [started, setStarted] = useState(false);
+
   useEffect(() => {
     const mywords = getWords(configs);
     setWords(
@@ -33,46 +61,21 @@ export default function Words({ configs }) {
     setOpacity(0);
   }, [configs]);
 
-  const [opacity, setOpacity] = useState(undefined);
-
-  const [words, setWords] = useState([]);
-  const [wordsLoaded, setWordsLoaded] = useState(false);
-
-  const [currWordIndex, setCurrWordIndex] = useState(undefined);
-  const [currWordCharIndex, setCurrWordCharIndex] = useState(undefined);
-
-  const [caretPosTop, setCaretPosTop] = useState(undefined);
-  const [caretPosLeft, setCaretPosLeft] = useState(undefined);
-
-  const [caretState, setCaretState] = useState("blink");
-  const [wordsWrapState, setWordsWrapState] = useState(undefined);
-  const [wordsCorrectness, setWordsCorrectness] = useState(undefined);
-
-  const [printFrom, setPrintFrom] = useState(0);
-  const [currLine, setCurrLine] = useState(1);
-  const [visibleLine, setVisibleLine] = useState(1);
-
-  const wordsContainer = useRef(null);
-
+  // fade in when new words come
   useEffect(() => {
     if (configs.option == undefined || opacity >= 1) return;
-
     const timer = setInterval(() => {
-      // console.log(opacity);
       setOpacity(opacity + 0.1);
     }, 50);
-
     return () => clearInterval(timer);
   }, [opacity]);
 
+  // make caret blink on idle
   useEffect(() => {
-    if (currWordCharIndex == undefined) {
-      return;
-    }
+    if (currWordCharIndex == undefined) return;
     const timeout = setTimeout(() => {
       setCaretState("blink");
     }, 2500);
-
     return () => {
       clearTimeout(timeout);
       setCaretState("");
@@ -89,6 +92,15 @@ export default function Words({ configs }) {
     const currentWordNodeList = document
       ?.querySelector("#words .active")
       ?.querySelectorAll(".letter");
+
+    if (currWordIndex == words.length) {
+      const currWordNode = document.querySelector("#words").lastChild.children;
+      let currentLetter = currWordNode[currWordNode.length - 1];
+
+      const { top, left } = currentLetter.getBoundingClientRect();
+      setCaretPosTop(top - 3);
+      setCaretPosLeft(left + 17.4);
+    }
 
     if (!currentWordNodeList) {
       return;
@@ -130,6 +142,12 @@ export default function Words({ configs }) {
 
   useEffect(() => {
     updateCaret();
+    if (
+      currWordIndex == words.length - 1 &&
+      currWordCharIndex == words[currWordIndex].length
+    ) {
+      endGame();
+    }
   }, [currWordIndex, currWordCharIndex]);
 
   useEffect(() => {
@@ -139,11 +157,6 @@ export default function Words({ configs }) {
   }, [words]);
 
   useKeyPress((key) => {
-    const letterWidth = 17.24;
-    const spaceWidth = 12.8;
-    const OFFSET = 7;
-    // console.log(key);
-
     if (key == " ") {
       // check if need to go to next line
       const needsToWrap = wordsWrapState[currWordIndex];
@@ -161,21 +174,18 @@ export default function Words({ configs }) {
       if (currWordCharIndex != getWordLength(words[currWordIndex])) {
         // pressing space at beginning of word shouldn't do anything
         if (currWordCharIndex != 0) {
-          setCurrWordIndex(currWordIndex + 1);
-          setCurrWordCharIndex(0);
           let arr = [...wordsCorrectness];
           arr[currWordIndex] = isWordCorrect(words[currWordIndex])
             ? ""
             : "incorrect";
           setWordsCorrectness(arr);
+
+          setCurrWordIndex(currWordIndex + 1);
+          setCurrWordCharIndex(0);
         }
       }
-      // if pressing space at anywhere else in the word
+      // if pressing space at the end of the word
       else {
-        // if (currTop != nextTop) {
-        //   scrollWords();
-        //   setCaretPosTop(nextTop);
-        // }
         let arr = [...wordsCorrectness];
         arr[currWordIndex] = isWordCorrect(words[currWordIndex])
           ? ""
@@ -209,7 +219,12 @@ export default function Words({ configs }) {
         }
         setCurrWordCharIndex(currWordCharIndex - 1);
       }
-    } else {
+    }
+    // Any other key is pressed
+    else {
+      // START THE GAME WHEN FIRST KEY PRESSED
+      if (!started) setStarted(true);
+
       if (
         findCurrentCharIndex(currWordCharIndex, words[currWordIndex]) !=
         getWordLength(words[currWordIndex])
@@ -229,6 +244,15 @@ export default function Words({ configs }) {
       }
     }
   });
+
+  /* === ENDS GAME IF CURR WORD IS OUT OF BOUNDS*/
+  useEffect(() => {
+    if (currWordIndex == words.length - 1) endGame();
+  }, [caretPosLeft]);
+
+  useEffect(() => {
+    if (started) startGame();
+  }, [started]);
 
   if (words.length == 0) return;
   return (

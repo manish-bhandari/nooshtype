@@ -17,17 +17,15 @@ export const getWords = (settings) => {
 };
 
 /**
- *
+ * Helper method to get words for given option
  */
 const getWordsForOption = (option, extras) => {
   let myWords = randomWords({ exactly: option });
   if (extras.includes("numbers")) {
     myWords = randomlyAddNumsToArray(myWords);
-    console.log("added numbers", myWords);
   }
   if (extras.includes("punctuations")) {
     myWords = randomlyPunctuateAll(myWords);
-    console.log("added punctuation", myWords);
   }
   return myWords;
 };

@@ -11,17 +11,18 @@ const options = {
 const extras = ["punctuations", "numbers"];
 
 export default function Game() {
+  const [currWordIndex, setCurrWordIndex] = useState(undefined);
+
   const [gamemode, setGamemode] = useState("time");
   const [option, setOption] = useState(undefined);
-
-  const [configs, setConfigs] = useState({
-    gamemode: gamemode,
-    option: option,
-  });
+  const [configs, setConfigs] = useState(undefined);
 
   const [extraOptions, setExtraOptions] = useState([]);
-
   const [extraEnabled, setExtraEnabled] = useState(true);
+
+  const [gameStatus, setGameStatus] = useState("waiting");
+
+  const [timer, setTimer] = useState(undefined);
 
   useEffect(() => {
     setConfigs({
@@ -47,8 +48,6 @@ export default function Game() {
     setExtraEnabled(gamemode != "quotes");
   }, [gamemode]);
 
-  useEffect(() => {}, [option]);
-
   const updateExtras = (extra) => {
     // if already exists, remove it
     if (extraOptions.includes(extra)) {
@@ -58,13 +57,42 @@ export default function Game() {
     }
   };
 
+  const start = () => {
+    setGameStatus("running");
+    console.log("game started");
+    if (gamemode === "time") {
+      setTimer(option);
+      startTimer();
+    }
+  };
+
+  const startTimer = () => {
+    let interval = setInterval(() => {
+      setTimer((prevTimer) => {
+        if (prevTimer === 0) {
+          end();
+          clearInterval(interval);
+        } else return prevTimer - 1;
+      });
+    }, 1000);
+  };
+
+  const end = () => {
+    console.log("game ended");
+    setGameStatus("finished");
+  };
+
   if (option == undefined) return <></>;
 
   return (
     <div className="game">
-      <div className="game_container">
-        <div className="settings">
-          <div className="options setting">
+      <div
+        className={`game_container ${
+          gameStatus === "finished" ? "hidden" : ""
+        }`}
+      >
+        <div className={`header ${gameStatus === "running" ? "hidden" : ""}`}>
+          <div className="options item">
             {options[gamemode].map((opt, index) => (
               <div
                 className={`option ${option == opt ? "active" : ""}`}
@@ -76,7 +104,7 @@ export default function Game() {
             ))}
           </div>
           <div className="rightside">
-            <div className="extras setting">
+            <div className="extras item">
               {extras.map((item, index) => (
                 <div
                   className={`addition ${
@@ -89,7 +117,7 @@ export default function Game() {
                 </div>
               ))}
             </div>
-            <div className="gamemodes setting">
+            <div className="gamemodes item">
               {gamemodes.map((mode, index) => (
                 <div
                   className={`gamemode ${gamemode == mode ? "active" : ""}`}
@@ -102,7 +130,32 @@ export default function Game() {
             </div>
           </div>
         </div>
-        <Words configs={configs} />
+
+        <div
+          className={`header ${
+            gameStatus === "running" && gamemode == "time" ? "" : "hidden"
+          }`}
+        >
+          <p className="status item">{timer}</p>
+        </div>
+
+        <div
+          className={`header ${
+            gameStatus === "running" && gamemode != "time" ? "" : "hidden"
+          }`}
+        >
+          <p className="status item">{`${currWordIndex}/${option}`}</p>
+        </div>
+        <Words
+          configs={configs}
+          startGame={start}
+          endGame={end}
+          currWordIndex={currWordIndex}
+          setCurrWordIndex={setCurrWordIndex}
+        />
+      </div>
+      <div className={`results ${gameStatus === "finished" ? "" : "hidden"}`}>
+        <h1>Results</h1>
       </div>
     </div>
   );
