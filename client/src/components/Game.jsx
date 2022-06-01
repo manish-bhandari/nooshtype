@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Words from "./Words";
 import "../styles/Game.css";
+import { getWords } from "../Utils/Words";
 
 const gamemodes = ["time", "words", "quotes"];
 const options = {
@@ -11,6 +12,8 @@ const options = {
 const extras = ["punctuations", "numbers"];
 
 export default function Game() {
+  const [words, setWords] = useState([]);
+
   const [currWordIndex, setCurrWordIndex] = useState(undefined);
 
   const [gamemode, setGamemode] = useState("time");
@@ -24,6 +27,14 @@ export default function Game() {
 
   const [timer, setTimer] = useState(undefined);
 
+  const [stopwatch, setStopwatch] = useState(0);
+
+  const [rawWPM, setrawWPM] = useState(0);
+  const [netWPM, setNetWPM] = useState(0);
+
+  const [totalTyped, setTotalTyped] = useState(0);
+  const [totalIncorrect, setTotalIncorrect] = useState(0);
+
   useEffect(() => {
     setConfigs({
       gamemode: gamemode,
@@ -32,6 +43,18 @@ export default function Game() {
       extraEnabled: extraEnabled,
     });
   }, [option, extraOptions, extraEnabled]);
+
+  useEffect(() => {
+    if (configs == undefined) return;
+    const mywords = getWords(configs);
+    setWords(
+      mywords.map((word) =>
+        word.split("").map((letter) => {
+          return { letter: letter, state: "none" };
+        })
+      )
+    );
+  }, [configs]);
 
   useEffect(() => {
     if (option !== options[gamemode][0]) {
@@ -62,24 +85,55 @@ export default function Game() {
     console.log("game started");
     if (gamemode === "time") {
       setTimer(option);
-      startTimer();
+      startCountdown();
     }
   };
 
-  const startTimer = () => {
+  const startCountdown = () => {
     let interval = setInterval(() => {
       setTimer((prevTimer) => {
         if (prevTimer === 0) {
           end();
           clearInterval(interval);
-        } else return prevTimer - 1;
+        } else {
+          return prevTimer - 1;
+        }
       });
     }, 1000);
   };
 
+  // Stopwatch to how much time elapsed
+  useEffect(() => {
+    let interval = null;
+    if (gameStatus === "running") {
+      interval = setInterval(() => {
+        setStopwatch((prevtime) => {
+          return prevtime + 1;
+        });
+      }, 1000);
+    } else clearInterval(interval);
+    return () => clearInterval(interval);
+  }, [gameStatus]);
+
+  useEffect(() => {
+    if (gameStatus !== "running") return;
+    const gross_wpm = totalTyped / 5 / (stopwatch / 60);
+    const net_wpm = (totalTyped - totalIncorrect) / 5 / (stopwatch / 60);
+
+    setrawWPM(gross_wpm.toFixed(2));
+    setNetWPM(net_wpm.toFixed(2));
+  }, [stopwatch]);
+
   const end = () => {
     console.log("game ended");
     setGameStatus("finished");
+  };
+
+  const getAccuracy = () => {
+    const accuracy = (1 - totalIncorrect / totalTyped) * 100;
+    console.log(totalIncorrect, totalTyped);
+    console.log(accuracy);
+    return accuracy;
   };
 
   if (option == undefined) return <></>;
@@ -132,19 +186,14 @@ export default function Game() {
         </div>
 
         <div
-          className={`header ${
-            gameStatus === "running" && gamemode == "time" ? "" : "hidden"
+          className={`header playing ${
+            gameStatus === "running" ? "" : "hidden"
           }`}
         >
-          <p className="status item">{timer}</p>
-        </div>
-
-        <div
-          className={`header ${
-            gameStatus === "running" && gamemode != "time" ? "" : "hidden"
-          }`}
-        >
-          <p className="status item">{`${currWordIndex}/${option}`}</p>
+          <p className="status">
+            {gamemode === "timer" ? timer : `${currWordIndex}/${words.length}`}
+          </p>
+          <p className="status">{Math.round(netWPM)}</p>
         </div>
         <Words
           configs={configs}
@@ -152,11 +201,39 @@ export default function Game() {
           endGame={end}
           currWordIndex={currWordIndex}
           setCurrWordIndex={setCurrWordIndex}
+          words={words}
+          setWords={setWords}
+          totalTyped={totalTyped}
+          setTotalTyped={setTotalTyped}
+          totalIncorrect={totalIncorrect}
+          setTotalIncorrect={setTotalIncorrect}
         />
       </div>
-      <div className={`results ${gameStatus === "finished" ? "" : "hidden"}`}>
-        <h1>Results</h1>
-      </div>
+      {gameStatus === "finished" && (
+        <div className={`results`}>
+          <h1>Results</h1>
+          <div className="content">
+            <div className="wpm">
+              <p className="label">wpm</p>
+              <h1 className="value">{netWPM}</h1>
+            </div>
+            <div className="footer">
+              <div>
+                <p className="label">acc</p>
+                <h1 className="value">{getAccuracy().toFixed(0)}</h1>
+              </div>
+              <div>
+                <p className="label">raw</p>
+                <h1 className="value">{rawWPM}</h1>
+              </div>
+              <div>
+                <p className="label">time</p>
+                <h1 className="value">{stopwatch}</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

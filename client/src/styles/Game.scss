@@ -18,9 +18,13 @@
   flex-direction: row;
   justify-content: space-between;
   font-size: 15px;
-  gap: 2px;
+  gap: 30px;
   color: var(--text-color-none);
   margin: 0 50px 30px 10px;
+  &.playing {
+    justify-content: left;
+  }
+
   .rightside {
     .item {
       display: flex;
@@ -54,6 +58,10 @@
 }
 
 .status {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: left;
   font-size: 24px;
   color: var(--main-color);
 }

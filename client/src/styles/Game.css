@@ -34,9 +34,15 @@
       -ms-flex-pack: justify;
           justify-content: space-between;
   font-size: 15px;
-  gap: 2px;
+  gap: 30px;
   color: var(--text-color-none);
   margin: 0 50px 30px 10px;
+}
+
+.header.playing {
+  -webkit-box-pack: left;
+      -ms-flex-pack: left;
+          justify-content: left;
 }
 
 .header .rightside .item {
@@ -87,6 +93,19 @@
 }
 
 .status {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
+  -webkit-box-pack: left;
+      -ms-flex-pack: left;
+          justify-content: left;
   font-size: 24px;
   color: var(--main-color);
 }

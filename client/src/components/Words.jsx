@@ -22,10 +22,15 @@ export default function Words({
   endGame,
   currWordIndex,
   setCurrWordIndex,
+  words,
+  setWords,
+  totalTyped,
+  setTotalTyped,
+  totalIncorrect,
+  setTotalIncorrect,
 }) {
   const [opacity, setOpacity] = useState(undefined);
 
-  const [words, setWords] = useState([]);
   const [wordsLoaded, setWordsLoaded] = useState(false);
 
   const [currWordCharIndex, setCurrWordCharIndex] = useState(undefined);
@@ -46,16 +51,8 @@ export default function Words({
   const [started, setStarted] = useState(false);
 
   useEffect(() => {
-    const mywords = getWords(configs);
-    setWords(
-      mywords.map((word) =>
-        word.split("").map((letter) => {
-          return { letter: letter, state: "none" };
-        })
-      )
-    );
-    setWordsWrapState(new Array(mywords.length).fill(false));
-    setWordsCorrectness(new Array(mywords.length).fill(""));
+    setWordsWrapState(new Array(words.length).fill(false));
+    setWordsCorrectness(new Array(words.length).fill(""));
     setCurrWordCharIndex(0);
     setCurrWordIndex(0);
     setOpacity(0);
@@ -172,15 +169,15 @@ export default function Words({
 
       // if pressing space before the word is done
       if (currWordCharIndex != getWordLength(words[currWordIndex])) {
-        // pressing space at beginning of word shouldn't do anything
+        // pressing space anywhere except the beginning
         if (currWordCharIndex != 0) {
           let arr = [...wordsCorrectness];
-          arr[currWordIndex] = isWordCorrect(words[currWordIndex])
-            ? ""
-            : "incorrect";
+          const isCorrect = isWordCorrect(words[currWordIndex]);
+          arr[currWordIndex] = isCorrect ? "" : "incorrect";
+          setTotalIncorrect(totalIncorrect + 1);
           setWordsCorrectness(arr);
-
           setCurrWordIndex(currWordIndex + 1);
+          setTotalTyped(totalTyped + 1);
           setCurrWordCharIndex(0);
         }
       }
@@ -193,6 +190,7 @@ export default function Words({
         setWordsCorrectness(arr);
         setCurrWordIndex(currWordIndex + 1);
         setCurrWordCharIndex(0);
+        setTotalTyped(totalTyped + 1);
       }
     } else if (key === "Backspace") {
       if (currWordCharIndex == 0) {
@@ -214,13 +212,18 @@ export default function Words({
           words[currWordIndex].pop();
         } else {
           const newWords = [...words];
+          const isPrevCorrect =
+            newWords[currWordIndex][currWordCharIndex - 1].state === "correct";
           newWords[currWordIndex][currWordCharIndex - 1].state = "none";
+
+          if (!isPrevCorrect) setTotalIncorrect(totalIncorrect - 1);
           setWords(newWords);
         }
         setCurrWordCharIndex(currWordCharIndex - 1);
+        setTotalTyped(totalTyped - 1);
       }
     }
-    // Any other key is pressed
+    // Letters are pressed
     else {
       // START THE GAME WHEN FIRST KEY PRESSED
       if (!started) setStarted(true);
@@ -229,27 +232,32 @@ export default function Words({
         findCurrentCharIndex(currWordCharIndex, words[currWordIndex]) !=
         getWordLength(words[currWordIndex])
       ) {
-        const newState =
-          key === words[currWordIndex][currWordCharIndex].letter
-            ? "correct"
-            : "incorrect";
+        const isCorrect =
+          key === words[currWordIndex][currWordCharIndex].letter;
+        const newState = isCorrect ? "correct" : "incorrect";
         const newWords = [...words];
         newWords[currWordIndex][currWordCharIndex].state = newState;
+        if (!isCorrect) {
+          setTotalIncorrect(totalIncorrect + 1);
+        }
         setWords(newWords);
         setCurrWordCharIndex(currWordCharIndex + 1);
       } else {
         // CASE: At the end of the word and you're typing letters instead of space
         words[currWordIndex].push({ letter: key, state: "extra" });
         setCurrWordCharIndex(currWordCharIndex + 1);
+        setTotalIncorrect(totalIncorrect + 1);
       }
+      setTotalTyped(totalTyped + 1);
     }
   });
 
-  /* === ENDS GAME IF CURR WORD IS OUT OF BOUNDS*/
+  /* === ENDS GAME IF CURR WORD IS OUT OF BOUNDS ===*/
   useEffect(() => {
-    if (currWordIndex == words.length - 1) endGame();
+    if (currWordIndex == words.length) endGame();
   }, [caretPosLeft]);
 
+  /* === START GAME ===*/
   useEffect(() => {
     if (started) startGame();
   }, [started]);
