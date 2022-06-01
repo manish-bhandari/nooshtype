@@ -182,7 +182,6 @@ export default function Game() {
             </div>
           </div>
         </div>
-
         {gameStatus === "running" && (
           <div className={`header playing`}>
             <p className="status">
@@ -191,7 +190,6 @@ export default function Game() {
             <p className="status">{Math.round(netWPM)}</p>
           </div>
         )}
-
         <Words
           configs={configs}
           startGame={start}
@@ -206,6 +204,12 @@ export default function Game() {
           totalIncorrect={totalIncorrect}
           setTotalIncorrect={setTotalIncorrect}
         />
+        <button
+          className="restart_btn"
+          style={{ opacity: `${gameStatus === "running" ? "1" : "0"}` }}
+        >
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>
       </div>
       {gameStatus === "finished" && (
         <div className={`results`}>

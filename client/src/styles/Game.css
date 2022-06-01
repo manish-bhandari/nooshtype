@@ -19,6 +19,34 @@
 .game_container {
   width: 80%;
   max-width: 1000px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.game_container .restart_btn {
+  margin-left: auto;
+  margin-right: auto;
+  border: none;
+  margin-top: 50px;
+  padding: 10px 30px;
+  font-size: 20px;
+  color: var(--text-color-none);
+  background: none;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.game_container .restart_btn:hover {
+  color: var(--text-color-correct);
 }
 
 .header {

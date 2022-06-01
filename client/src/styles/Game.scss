@@ -10,6 +10,24 @@
 .game_container {
   width: 80%;
   max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  .restart_btn {
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
+    margin-top: 50px;
+    padding: 10px 30px;
+    font-size: 20px;
+    color: var(--text-color-none);
+    background: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    &:hover {
+      color: var(--text-color-correct);
+    }
+  }
 }
 
 .header {
