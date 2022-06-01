@@ -30,7 +30,8 @@ export const shortQuotes = [
   //   "Get your stinking paws off me, you damned dirty ape.",
   //   "A million dollars isn't cool. You know what's cool? A billion dollars.",
   //   "I believe what doesn't kill you, simply makes you stronger.",
-  "You could not live with your own failure. Where did that bring you? Back to me.",
+  //   "You could not live with your own failure. Where did that bring you? Back to me.",
+  "The quick brown fox jumps over the lazy dog",
 ];
 
 export const mediumQuotes = [

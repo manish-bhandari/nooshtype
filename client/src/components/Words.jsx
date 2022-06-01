@@ -20,6 +20,7 @@ export default function Words({
   configs,
   startGame,
   endGame,
+  gameStatus,
   currWordIndex,
   setCurrWordIndex,
   words,
@@ -141,7 +142,8 @@ export default function Words({
     updateCaret();
     if (
       currWordIndex == words.length - 1 &&
-      currWordCharIndex == words[currWordIndex].length
+      currWordCharIndex == words[currWordIndex].length &&
+      words[currWordIndex][currWordCharIndex - 1].state === "correct"
     ) {
       endGame();
     }
@@ -154,6 +156,8 @@ export default function Words({
   }, [words]);
 
   useKeyPress((key) => {
+    if (gameStatus == "finished") return;
+
     if (key == " ") {
       // check if need to go to next line
       const needsToWrap = wordsWrapState[currWordIndex];

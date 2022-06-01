@@ -68,7 +68,73 @@
 
 /* === RESULTS ====*/
 .results {
-  h1 {
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  .head {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    text-align: center;
+    h1 {
+      color: var(--main-color);
+      text-align: center;
+      font-weight: 100;
+      font-size: 40px;
+    }
+    p {
+      font-size: 14px;
+      color: var(--text-color-none);
+    }
+  }
+
+  .item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .top {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--wpm-result-bg);
+    opacity: 0.8;
+    padding: 30px 100px;
+    border-radius: 15px;
+    position: relative;
+
+    .label {
+      font-size: 30px;
+    }
+    .value {
+      font-size: 80px;
+    }
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      .label {
+        font-size: 15px;
+      }
+      .value {
+        font-size: 30px;
+      }
+    }
+  }
+
+  .label {
+    font-weight: 100;
+    line-height: 1em;
     color: var(--main-color);
+  }
+  .value {
+    font-weight: 100;
+    line-height: 1em;
+    color: var(--text-color-correct);
   }
 }

@@ -131,8 +131,6 @@ export default function Game() {
 
   const getAccuracy = () => {
     const accuracy = (1 - totalIncorrect / totalTyped) * 100;
-    console.log(totalIncorrect, totalTyped);
-    console.log(accuracy);
     return accuracy;
   };
 
@@ -185,20 +183,20 @@ export default function Game() {
           </div>
         </div>
 
-        <div
-          className={`header playing ${
-            gameStatus === "running" ? "" : "hidden"
-          }`}
-        >
-          <p className="status">
-            {gamemode === "timer" ? timer : `${currWordIndex}/${words.length}`}
-          </p>
-          <p className="status">{Math.round(netWPM)}</p>
-        </div>
+        {gameStatus === "running" && (
+          <div className={`header playing`}>
+            <p className="status">
+              {gamemode === "time" ? timer : `${currWordIndex}/${words.length}`}
+            </p>
+            <p className="status">{Math.round(netWPM)}</p>
+          </div>
+        )}
+
         <Words
           configs={configs}
           startGame={start}
           endGame={end}
+          gameStatus={gameStatus}
           currWordIndex={currWordIndex}
           setCurrWordIndex={setCurrWordIndex}
           words={words}
@@ -211,24 +209,31 @@ export default function Game() {
       </div>
       {gameStatus === "finished" && (
         <div className={`results`}>
-          <h1>Results</h1>
+          <div className="head">
+            <h1>Result</h1>
+            <p>
+              {gamemode},{option}
+            </p>
+          </div>
           <div className="content">
-            <div className="wpm">
-              <p className="label">wpm</p>
-              <h1 className="value">{netWPM}</h1>
+            <div className="top">
+              <div className="item">
+                <p className="label">wpm</p>
+                <h1 className="value">{Math.round(netWPM)}</h1>
+              </div>
             </div>
             <div className="footer">
-              <div>
+              <div className="item">
                 <p className="label">acc</p>
-                <h1 className="value">{getAccuracy().toFixed(0)}</h1>
+                <h1 className="value">{getAccuracy().toFixed(0)}%</h1>
               </div>
-              <div>
+              <div className="item">
                 <p className="label">raw</p>
-                <h1 className="value">{rawWPM}</h1>
+                <h1 className="value">{Math.round(rawWPM)}</h1>
               </div>
-              <div>
+              <div className="item">
                 <p className="label">time</p>
-                <h1 className="value">{stopwatch}</h1>
+                <h1 className="value">{stopwatch.toFixed(0)}s</h1>
               </div>
             </div>
           </div>

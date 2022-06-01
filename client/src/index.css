@@ -11,6 +11,8 @@
   --text-color-disabled: rgb(42, 46, 47);
 
   --main-color: rgb(78, 245, 217);
+
+  --wpm-result-bg: rgb(28, 38, 45);
 }
 
 body {
