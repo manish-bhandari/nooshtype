@@ -157,6 +157,7 @@ export default function Words({
       words[currWordIndex][currWordCharIndex - 1].state === "correct"
     ) {
       endGame();
+      console.log("endgame");
       return;
     }
     updateCaret();
@@ -208,6 +209,11 @@ export default function Words({
         arr[currWordIndex] = isWordCorrect(words[currWordIndex])
           ? ""
           : "incorrect";
+
+        if (currWordIndex == words.length - 1) {
+          endGame();
+          return;
+        }
         setWordsCorrectness(arr);
         setCurrWordIndex(currWordIndex + 1);
         setCurrWordCharIndex(0);

@@ -102,13 +102,12 @@ export default function Game() {
     setGameStatus("running");
     if (gamemode === "time") {
       setTimer(option);
-      startCountdown();
     }
   };
 
   useEffect(() => {
     let interval = null;
-    if (gameStatus === "running") {
+    if (gameStatus === "running" && gamemode == "time") {
       interval = setInterval(() => {
         setTimer((prevTimer) => {
           if (prevTimer === 0) {
@@ -122,8 +121,6 @@ export default function Game() {
     }
     return () => clearInterval(interval);
   }, [gameStatus]);
-
-  const startCountdown = () => {};
 
   // Stopwatch to how much time elapsed
   useEffect(() => {
