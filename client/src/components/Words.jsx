@@ -31,7 +31,7 @@ export default function Words({
   totalCorrectUncor,
   setTotalCorrectUncor,
 }) {
-  const [opacity, setOpacity] = useState(undefined);
+  const [opacity, setOpacity] = useState(0);
 
   const [wordsLoaded, setWordsLoaded] = useState(false);
 
@@ -53,11 +53,11 @@ export default function Words({
   const [started, setStarted] = useState(false);
 
   useEffect(() => {
+    setOpacity(0);
     setWordsWrapState(new Array(words.length).fill(false));
     setWordsCorrectness(new Array(words.length).fill(""));
     setCurrWordCharIndex(0);
     setCurrWordIndex(0);
-    setOpacity(0);
     setWordsLoaded(false);
     setPrintFrom(0);
     setStarted(false);
@@ -67,7 +67,7 @@ export default function Words({
 
   // fade in when new words come
   useEffect(() => {
-    if (configs.option == undefined || opacity >= 1) return;
+    if (opacity >= 1) return;
     const timer = setInterval(() => {
       setOpacity(opacity + 0.1);
     }, 50);
@@ -285,14 +285,12 @@ export default function Words({
     if (started) startGame();
   }, [started]);
 
-  // if (words.length == 0) return;
   return (
-    <div className="words_wrapper">
+    <div className="words_wrapper" style={{ opacity: `${opacity}` }}>
       <div
         className={`caret ${caretState}`}
         style={{ top: `${caretPosTop}px`, left: `${caretPosLeft}px` }}
       ></div>
-      {/* style={{ opacity: `${opacity}` }} */}
       <div id="words" className="words" ref={wordsContainer}>
         {words.slice(printFrom, words.length).map((word, index) => {
           index = index + printFrom;

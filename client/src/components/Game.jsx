@@ -2,7 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import Words from "./Words";
 import "../styles/Game.css";
 import { getWords } from "../Utils/Words";
-import useKeyPress from "../Utils/useKeyPress";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRotateRight } from "@fortawesome/free-solid-svg-icons";
+
 import { useLocalStorage } from "../Utils/useLocalStorage";
 
 const gamemodes = ["time", "words", "quotes"];
@@ -40,7 +42,7 @@ export default function Game() {
 
   const [restartFocus, setRestartFocus] = useState(false);
 
-  const [gameOpacity, setGameOpacity] = useState(1);
+  const [gameOpacity, setGameOpacity] = useState(0);
 
   const [totalUncor, setTotalUncor] = useState(0);
   const [totalCorrectUncor, setTotalCorrectUncor] = useState(0);
@@ -49,7 +51,7 @@ export default function Game() {
     if (gameOpacity >= 1) return;
     const timer = setInterval(() => {
       setGameOpacity(gameOpacity + 0.1);
-    }, 0);
+    }, 30);
     return () => clearInterval(timer);
   }, [gameOpacity]);
 
@@ -325,17 +327,14 @@ export default function Game() {
           </div>
         </div>
       )}
-      {gameStatus !== "hi" && (
-        <button
-          className="restart_btn"
-          ref={restartRef}
-          onClick={restart}
-          onKeyDown={(e) => (e.key === "Enter" ? restart() : e.target.blur())}
-          // style={{ opacity: `${gameStatus !== "waiting" ? "1" : "0"}` }}
-        >
-          <i className="fa-solid fa-rotate-right"></i>
-        </button>
-      )}
+      <button
+        className="restart_btn"
+        ref={restartRef}
+        onClick={restart}
+        onKeyDown={(e) => (e.key === "Enter" ? restart() : e.target.blur())}
+      >
+        <FontAwesomeIcon icon={faRotateRight} />
+      </button>
     </div>
   );
 }
