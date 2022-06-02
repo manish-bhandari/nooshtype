@@ -21,7 +21,6 @@ export default function Words({
   startGame,
   endGame,
   gameStatus,
-  setGameStatus,
   currWordIndex,
   setCurrWordIndex,
   words,
@@ -61,8 +60,9 @@ export default function Words({
     setWords(undefined);
     setWordsLoaded(false);
     setPrintFrom(0);
-    setGameStatus("waiting");
     setStarted(false);
+    setCurrLine(1);
+    setVisibleLine(1);
   }, [configs]);
 
   // fade in when new words come
@@ -125,6 +125,7 @@ export default function Words({
 
   useEffect(() => {
     adjustNewLineWords();
+    updateCaret();
   }, [wordsLoaded, currWordIndex]);
 
   const adjustNewLineWords = () => {
