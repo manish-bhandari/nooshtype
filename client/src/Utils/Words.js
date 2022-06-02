@@ -1,4 +1,3 @@
-import { article } from "https://unpkg.com/txtgen/dist/txtgen.esm.js";
 import randomWords from "random-words";
 import { shortQuotes, mediumQuotes, longQuotes } from "./quotes";
 
