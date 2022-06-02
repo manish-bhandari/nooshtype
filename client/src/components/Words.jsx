@@ -29,6 +29,10 @@ export default function Words({
   setTotalTyped,
   totalIncorrect,
   setTotalIncorrect,
+  totalUncor,
+  setTotalUncor,
+  totalCorrectUncor,
+  setTotalCorrectUncor,
 }) {
   const [opacity, setOpacity] = useState(undefined);
 
@@ -63,6 +67,8 @@ export default function Words({
     setStarted(false);
     setCurrLine(1);
     setVisibleLine(1);
+    setTotalCorrectUncor(0);
+    setTotalUncor(0);
   }, [configs]);
 
   // fade in when new words come
@@ -93,6 +99,7 @@ export default function Words({
   };
 
   const updateCaret = () => {
+    if (wordsLoaded == false) return;
     const currentWordNodeList = document
       ?.querySelector("#words .active")
       ?.querySelectorAll(".letter");
@@ -100,6 +107,7 @@ export default function Words({
     if (currWordIndex == words.length) {
       const currWordNode = document.querySelector("#words").lastChild.children;
       let currentLetter = currWordNode[currWordNode.length - 1];
+      if (!currentLetter) return;
 
       const { top, left } = currentLetter.getBoundingClientRect();
       setCaretPosTop(top - 3);
@@ -125,7 +133,7 @@ export default function Words({
 
   useEffect(() => {
     adjustNewLineWords();
-    updateCaret();
+    if (wordsLoaded) updateCaret();
   }, [wordsLoaded, currWordIndex]);
 
   const adjustNewLineWords = () => {
@@ -146,18 +154,19 @@ export default function Words({
   };
 
   useEffect(() => {
-    updateCaret();
     if (
       currWordIndex == words.length - 1 &&
       currWordCharIndex == words[currWordIndex].length &&
       words[currWordIndex][currWordCharIndex - 1].state === "correct"
     ) {
       endGame();
+      return;
     }
+    updateCaret();
   }, [currWordIndex, currWordCharIndex]);
 
   useEffect(() => {
-    if (!words) {
+    if (words != undefined) {
       setWordsLoaded(true);
     }
   }, [words]);
@@ -186,6 +195,10 @@ export default function Words({
           const isCorrect = isWordCorrect(words[currWordIndex]);
           arr[currWordIndex] = isCorrect ? "" : "incorrect";
           setTotalIncorrect(totalIncorrect + 1);
+          console.log("here");
+          if (currWordCharIndex <= getWordLength(words[currWordCharIndex])) {
+            setTotalUncor(totalUncor + 1);
+          }
           setWordsCorrectness(arr);
           setCurrWordIndex(currWordIndex + 1);
           setTotalTyped(totalTyped + 1);
@@ -235,7 +248,7 @@ export default function Words({
       }
     }
     // Letters are pressed
-    else {
+    else if (key.length == 1) {
       // START THE GAME WHEN FIRST KEY PRESSED
       if (!started) setStarted(true);
 
@@ -250,6 +263,8 @@ export default function Words({
         newWords[currWordIndex][currWordCharIndex].state = newState;
         if (!isCorrect) {
           setTotalIncorrect(totalIncorrect + 1);
+        } else {
+          setTotalCorrectUncor(totalCorrectUncor + 1);
         }
         setWords(newWords);
         setCurrWordCharIndex(currWordCharIndex + 1);
@@ -260,6 +275,7 @@ export default function Words({
         setTotalIncorrect(totalIncorrect + 1);
       }
       setTotalTyped(totalTyped + 1);
+      setTotalUncor(totalUncor + 1);
     }
   });
 

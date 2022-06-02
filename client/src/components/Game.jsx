@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Words from "./Words";
 import "../styles/Game.css";
 import { getWords } from "../Utils/Words";
+import useKeyPress from "../Utils/useKeyPress";
 
 const gamemodes = ["time", "words", "quotes"];
 const options = {
@@ -41,11 +42,14 @@ export default function Game() {
 
   const [gameOpacity, setGameOpacity] = useState(1);
 
+  const [totalUncor, setTotalUncor] = useState(0);
+  const [totalCorrectUncor, setTotalCorrectUncor] = useState(0);
+
   useEffect(() => {
     if (gameOpacity >= 1) return;
     const timer = setInterval(() => {
       setGameOpacity(gameOpacity + 0.1);
-    }, 30);
+    }, 0);
     return () => clearInterval(timer);
   }, [gameOpacity]);
 
@@ -96,7 +100,6 @@ export default function Game() {
 
   const start = () => {
     setGameStatus("running");
-    console.log("game started");
     if (gamemode === "time") {
       setTimer(option);
       startCountdown();
@@ -145,16 +148,14 @@ export default function Game() {
   }, [stopwatch]);
 
   const end = () => {
-    console.log("game ended");
     setGameStatus("finished");
   };
 
   const restart = () => {
-    console.log("restart pressed");
     setGameStatus("waiting");
     setCurrWordIndex(0);
-    setGameOpacity(0);
     restartRef.current.blur();
+    setGameOpacity(0);
     setConfigs({
       gamemode: gamemode,
       option: option,
@@ -164,8 +165,7 @@ export default function Game() {
   };
 
   const getAccuracy = () => {
-    const accuracy = (1 - totalIncorrect / totalTyped) * 100;
-    return accuracy;
+    return (totalCorrectUncor / totalUncor) * 100;
   };
 
   useEffect(() => {
@@ -175,22 +175,28 @@ export default function Game() {
   }, [restartFocus]);
 
   window.addEventListener("keydown", (e) => {
-    if (e.isComposing || e.key === "Tab") {
+    if (e.key === "Tab") {
       e.preventDefault();
+    }
+  });
 
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Tab") {
       if (e.repeat) return;
-      if (!restartFocus) {
+      if (document.activeElement !== restartRef.current) {
         restartRef.current.focus();
         setRestartFocus(true);
       }
     }
-    // do something
   });
 
   if (option == undefined) return <></>;
 
   return (
     <div className="game" style={{ opacity: gameOpacity }}>
+      {/* <h1
+        style={{ color: "white" }}
+      >{`${totalTyped} - ${totalIncorrect}) / 5 / (${stopwatch} / 60`}</h1> */}
       <div
         className={`game_container ${
           gameStatus === "finished" ? "hidden" : ""
@@ -257,6 +263,10 @@ export default function Game() {
           setTotalTyped={setTotalTyped}
           totalIncorrect={totalIncorrect}
           setTotalIncorrect={setTotalIncorrect}
+          totalUncor={totalUncor}
+          setTotalUncor={setTotalUncor}
+          totalCorrectUncor={totalCorrectUncor}
+          setTotalCorrectUncor={setTotalCorrectUncor}
         />
       </div>
       {gameStatus === "finished" && (
