@@ -6,7 +6,7 @@ const app = express();
 const path = require("path");
 
 const FRONTEND_URI = process.env.FRONTEND_URI;
-const PORT = 5001;
+const PORT = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
   const data = {
