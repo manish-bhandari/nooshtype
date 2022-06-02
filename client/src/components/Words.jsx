@@ -58,14 +58,11 @@ export default function Words({
     setCurrWordCharIndex(0);
     setCurrWordIndex(0);
     setOpacity(0);
-    setWords(undefined);
     setWordsLoaded(false);
     setPrintFrom(0);
     setStarted(false);
     setCurrLine(1);
     setVisibleLine(1);
-    setTotalCorrectUncor(0);
-    setTotalUncor(0);
   }, [configs]);
 
   // fade in when new words come
@@ -96,7 +93,6 @@ export default function Words({
   };
 
   const updateCaret = () => {
-    if (wordsLoaded == false) return;
     const currentWordNodeList = document
       ?.querySelector("#words .active")
       ?.querySelectorAll(".letter");
@@ -130,8 +126,7 @@ export default function Words({
 
   useEffect(() => {
     adjustNewLineWords();
-    if (wordsLoaded) updateCaret();
-  }, [wordsLoaded, currWordIndex]);
+  }, [currWordIndex]);
 
   const adjustNewLineWords = () => {
     if (wordsContainer.current) {
@@ -157,7 +152,6 @@ export default function Words({
       words[currWordIndex][currWordCharIndex - 1].state === "correct"
     ) {
       endGame();
-      console.log("endgame");
       return;
     }
     updateCaret();
@@ -193,8 +187,7 @@ export default function Words({
           const isCorrect = isWordCorrect(words[currWordIndex]);
           arr[currWordIndex] = isCorrect ? "" : "incorrect";
           setTotalIncorrect(totalIncorrect + 1);
-          console.log("here");
-          if (currWordCharIndex <= getWordLength(words[currWordCharIndex])) {
+          if (currWordCharIndex <= getWordLength(words[currWordIndex])) {
             setTotalUncor(totalUncor + 1);
           }
           setWordsCorrectness(arr);
@@ -292,13 +285,14 @@ export default function Words({
     if (started) startGame();
   }, [started]);
 
-  if (words.length == 0) return;
+  // if (words.length == 0) return;
   return (
-    <div className="words_wrapper" style={{ opacity: `${opacity}` }}>
+    <div className="words_wrapper">
       <div
         className={`caret ${caretState}`}
         style={{ top: `${caretPosTop}px`, left: `${caretPosLeft}px` }}
       ></div>
+      {/* style={{ opacity: `${opacity}` }} */}
       <div id="words" className="words" ref={wordsContainer}>
         {words.slice(printFrom, words.length).map((word, index) => {
           index = index + printFrom;

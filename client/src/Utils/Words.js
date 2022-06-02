@@ -2,10 +2,13 @@ import randomWords from "random-words";
 import { shortQuotes, mediumQuotes, longQuotes } from "./quotes";
 
 export const getWords = (settings) => {
-  const { gamemode, option, extraOptions, extraEnabled } = settings;
+  const { gamemode, option, extraOptions } = settings;
   let words = [];
   if (gamemode === "time") {
-    return getWordsForOption(100, extraOptions);
+    let amt = 0;
+    if (option >= 60) amt = 200;
+    else amt = 100;
+    return getWordsForOption(amt, extraOptions);
   } else if (gamemode === "words") {
     return getWordsForOption(option, extraOptions);
   } else {
@@ -48,8 +51,8 @@ const randomlyAddNumsToArray = (array) => {
  */
 const getRandomQuote = (length) => {
   let n = undefined;
-  if (length == "short") n = 0;
-  else if (length == "medium") n = 1;
+  if (length === "short") n = 0;
+  else if (length === "medium") n = 1;
   else n = 2;
 
   const quotes = [shortQuotes, mediumQuotes, longQuotes];
@@ -62,7 +65,7 @@ const randomlyPunctuateAll = (words) => {
   let punctuatedWords = words.map((word, index) => {
     // likelihood to add a punctuation: 20%
     const random = Math.random();
-    if (random <= 0.2 && index != 0) {
+    if (random <= 0.2 && index !== 0) {
       return punctuateWord(word);
     } else {
       return word;
@@ -74,7 +77,6 @@ const randomlyPunctuateAll = (words) => {
 
   // Add capitalizations after periods
   for (var i = 1; i < punctuatedWords.length - 1; i++) {
-    const currentWord = punctuatedWords[i];
     const pastWord = punctuatedWords[i - 1];
 
     if (pastWord.charAt(pastWord.length - 1) === ".") {

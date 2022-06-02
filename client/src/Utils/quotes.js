@@ -18,7 +18,7 @@ export const shortQuotes = [
   "I wanted you to know, that I will always be there for you; I will always be there to take care of you. I promise you that. I will always be your friend.",
   "You have the freedom to defend the world's freedom and I have the freedom to continue moving forward.",
   "Sorry, Tony. You know I wouldn't do this if I had any another choice. But he's my friend.",
-  "Thanks! Well, I could have stuck the landing a little better. It's just, new suit. . . . Wait, it's nothing, Mr. Stark. It's - it's perfect, thank you.",
+  "Thanks! Well, I could have stuck the landing a little better. It's just, new suit. Wait, it's nothing, Mr. Stark. It's - it's perfect, thank you.",
   "Dressed like a spider, he looks like a bug, we should all just give him one big hug..",
   "Spider-Man wasn't trying to attack the city, he was trying to save it. That's slander.",
   "Well check it again web head. The ad said 3,000 for three minutes. You pinned him in two, for that I give you a hundred.",

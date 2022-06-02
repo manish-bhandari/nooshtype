@@ -3,6 +3,7 @@ import Words from "./Words";
 import "../styles/Game.css";
 import { getWords } from "../Utils/Words";
 import useKeyPress from "../Utils/useKeyPress";
+import { useLocalStorage } from "../Utils/useLocalStorage";
 
 const gamemodes = ["time", "words", "quotes"];
 const options = {
@@ -19,12 +20,11 @@ export default function Game() {
 
   const [currWordIndex, setCurrWordIndex] = useState(undefined);
 
-  const [gamemode, setGamemode] = useState("time");
-  const [option, setOption] = useState(undefined);
-  const [configs, setConfigs] = useState(undefined);
+  const [gamemode, setGamemode] = useLocalStorage("gamemode", "time");
+  // const [option, setOption] = useState(undefined);
+  // const [extraOptions, setExtraOptions] = useState(undefined);
 
-  const [extraOptions, setExtraOptions] = useState([]);
-  const [extraEnabled, setExtraEnabled] = useState(true);
+  const [configs, setConfigs] = useState(undefined);
 
   const [gameStatus, setGameStatus] = useState("waiting");
 
@@ -54,16 +54,8 @@ export default function Game() {
   }, [gameOpacity]);
 
   useEffect(() => {
-    setConfigs({
-      gamemode: gamemode,
-      option: option,
-      extraOptions: extraOptions,
-      extraEnabled: extraEnabled,
-    });
-  }, [option, extraOptions, extraEnabled]);
-
-  useEffect(() => {
     if (configs == undefined) return;
+    console.log(configs);
     const mywords = getWords(configs);
     setWords(
       mywords.map((word) =>
@@ -75,33 +67,68 @@ export default function Game() {
   }, [configs]);
 
   useEffect(() => {
-    if (option !== options[gamemode][0]) {
-      setOption(options[gamemode][0]);
-    } else {
-      setConfigs({
-        gamemode: gamemode,
-        option: option,
-        extraOptions: extraOptions,
-        extraEnable: extraEnabled,
-      });
+    // const settingsStorage = localStorage.getItem("modes");
+    // const settings = JSON.parse(modesStorage);
+
+    // if (settings) {
+    //   const { gamemode, option, extraOptions } = settings;
+    // }
+    localStorage.setItem("gamemode", JSON.stringify(gamemode));
+    const settingsStorage = localStorage.getItem("settings");
+    let settings = JSON.parse(settingsStorage);
+
+    if (!settings) {
+      settings = {
+        time: {
+          option: options["time"][0],
+          extraOptions: [],
+        },
+        words: { option: options["words"][0], extraOptions: [] },
+        quotes: { option: options["quotes"][0], extraOptions: [] },
+      };
+      localStorage.setItem("settings", JSON.stringify(settings));
     }
-    setExtraOptions([]);
-    setExtraEnabled(gamemode != "quotes");
+    const myOption = settings[gamemode].option;
+    const myExtraOptions = settings[gamemode].extraOptions;
+    setConfigs({
+      gamemode: gamemode,
+      option: myOption,
+      extraOptions: myExtraOptions,
+    });
   }, [gamemode]);
 
   const updateExtras = (extra) => {
     // if already exists, remove it
-    if (extraOptions.includes(extra)) {
-      setExtraOptions(extraOptions.filter((ext) => ext !== extra));
+    const save = { ...configs };
+    if (configs.extraOptions.includes(extra)) {
+      save["extraOptions"] = configs.extraOptions.filter(
+        (ext) => ext !== extra
+      );
+      setConfigs(save);
     } else {
-      setExtraOptions([...extraOptions, extra]);
+      save["extraOptions"] = [...configs.extraOptions, extra];
+      setConfigs(save);
     }
+    const storage = localStorage.getItem("settings");
+    const settings = JSON.parse(storage);
+    settings[gamemode].extraOptions = save.extraOptions;
+    localStorage.setItem("settings", JSON.stringify(settings));
+  };
+
+  const updateOption = (option) => {
+    let save = { ...configs };
+    save["option"] = option;
+    const storage = localStorage.getItem("settings");
+    const settings = JSON.parse(storage);
+    settings[gamemode].option = option;
+    localStorage.setItem("settings", JSON.stringify(settings));
+    setConfigs(save);
   };
 
   const start = () => {
     setGameStatus("running");
     if (gamemode === "time") {
-      setTimer(option);
+      setTimer(configs.option);
     }
   };
 
@@ -150,14 +177,12 @@ export default function Game() {
 
   const restart = () => {
     setGameStatus("waiting");
-    setCurrWordIndex(0);
     restartRef.current.blur();
     setGameOpacity(0);
     setConfigs({
       gamemode: gamemode,
-      option: option,
-      extraOptions: extraOptions,
-      extraEnabled: extraEnabled,
+      option: configs.option,
+      extraOptions: configs.extraOptions,
     });
   };
 
@@ -187,7 +212,7 @@ export default function Game() {
     }
   });
 
-  if (option == undefined) return <></>;
+  if (configs == undefined || words == undefined) return <></>;
 
   return (
     <div className="game" style={{ opacity: gameOpacity }}>
@@ -203,8 +228,10 @@ export default function Game() {
           <div className="options item">
             {options[gamemode].map((opt, index) => (
               <div
-                className={`option ${option == opt ? "active" : ""}`}
-                onClick={() => setOption(opt)}
+                className={`option ${configs.option == opt ? "active" : ""}`}
+                onClick={() => {
+                  updateOption(opt);
+                }}
                 key={index}
               >
                 {opt}
@@ -216,8 +243,8 @@ export default function Game() {
               {extras.map((item, index) => (
                 <div
                   className={`addition ${
-                    extraOptions.includes(item) ? "active" : ""
-                  } ${!extraEnabled ? "disabled" : ""}`}
+                    configs.extraOptions.includes(item) ? "active" : ""
+                  } ${gamemode === "quotes" ? "disabled" : ""}`}
                   onClick={() => updateExtras(item)}
                   key={index}
                 >
@@ -271,7 +298,7 @@ export default function Game() {
           <div className="head">
             <h1>Result</h1>
             <p>
-              {gamemode},{option}
+              {gamemode},{configs.option}
             </p>
           </div>
           <div className="content">
