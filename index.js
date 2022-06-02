@@ -8,15 +8,6 @@ const path = require("path");
 const FRONTEND_URI = process.env.FRONTEND_URI;
 const PORT = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
-  const data = {
-    name: "Manish Bhandari",
-    isAwesome: true,
-  };
-
-  res.json(data);
-});
-
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.resolve(__dirname, "./client/build")));
 
