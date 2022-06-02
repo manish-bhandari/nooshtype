@@ -1,7 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
-import randomWords from "random-words";
-import { article } from "https://unpkg.com/txtgen/dist/txtgen.esm.js";
 import useKeyPress from "../Utils/useKeyPress";
 import "../styles/Words.css";
 
