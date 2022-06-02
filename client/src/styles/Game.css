@@ -16,6 +16,30 @@
           align-items: center;
 }
 
+.game .restart_btn {
+  margin-left: auto;
+  margin-right: auto;
+  border: none;
+  padding: 10px 30px;
+  font-size: 20px;
+  color: var(--text-color-none);
+  background: none;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.game .restart_btn:hover {
+  color: var(--text-color-correct);
+}
+
+.game .restart_btn:focus {
+  background-color: var(--text-color-correct);
+  color: var(--color-btn-highlight);
+  outline: none;
+}
+
 .game_container {
   width: 80%;
   max-width: 1000px;
@@ -29,24 +53,7 @@
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-}
-
-.game_container .restart_btn {
-  margin-left: auto;
-  margin-right: auto;
-  border: none;
-  margin-top: 50px;
-  padding: 10px 30px;
-  font-size: 20px;
-  color: var(--text-color-none);
-  background: none;
-  -webkit-transition: all 0.2s ease;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.game_container .restart_btn:hover {
-  color: var(--text-color-correct);
+  margin-bottom: 50px;
 }
 
 .header {

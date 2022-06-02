@@ -21,6 +21,7 @@ export default function Words({
   startGame,
   endGame,
   gameStatus,
+  setGameStatus,
   currWordIndex,
   setCurrWordIndex,
   words,
@@ -57,6 +58,11 @@ export default function Words({
     setCurrWordCharIndex(0);
     setCurrWordIndex(0);
     setOpacity(0);
+    setWords(undefined);
+    setWordsLoaded(false);
+    setPrintFrom(0);
+    setGameStatus("waiting");
+    setStarted(false);
   }, [configs]);
 
   // fade in when new words come

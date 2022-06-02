@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Words from "./Words";
 import "../styles/Game.css";
 import { getWords } from "../Utils/Words";
@@ -12,6 +12,8 @@ const options = {
 const extras = ["punctuations", "numbers"];
 
 export default function Game() {
+  const restartRef = useRef();
+
   const [words, setWords] = useState([]);
 
   const [currWordIndex, setCurrWordIndex] = useState(undefined);
@@ -34,6 +36,18 @@ export default function Game() {
 
   const [totalTyped, setTotalTyped] = useState(0);
   const [totalIncorrect, setTotalIncorrect] = useState(0);
+
+  const [restartFocus, setRestartFocus] = useState(false);
+
+  const [gameOpacity, setGameOpacity] = useState(1);
+
+  useEffect(() => {
+    if (gameOpacity >= 1) return;
+    const timer = setInterval(() => {
+      setGameOpacity(gameOpacity + 0.1);
+    }, 30);
+    return () => clearInterval(timer);
+  }, [gameOpacity]);
 
   useEffect(() => {
     setConfigs({
@@ -89,18 +103,24 @@ export default function Game() {
     }
   };
 
-  const startCountdown = () => {
-    let interval = setInterval(() => {
-      setTimer((prevTimer) => {
-        if (prevTimer === 0) {
-          end();
-          clearInterval(interval);
-        } else {
-          return prevTimer - 1;
-        }
-      });
-    }, 1000);
-  };
+  useEffect(() => {
+    let interval = null;
+    if (gameStatus === "running") {
+      interval = setInterval(() => {
+        setTimer((prevTimer) => {
+          if (prevTimer === 0) {
+            end();
+            clearInterval(interval);
+          } else {
+            return prevTimer - 1;
+          }
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [gameStatus]);
+
+  const startCountdown = () => {};
 
   // Stopwatch to how much time elapsed
   useEffect(() => {
@@ -129,15 +149,48 @@ export default function Game() {
     setGameStatus("finished");
   };
 
+  const restart = () => {
+    console.log("restart pressed");
+    setGameStatus("waiting");
+    setCurrWordIndex(0);
+    setGameOpacity(0);
+    restartRef.current.blur();
+    setConfigs({
+      gamemode: gamemode,
+      option: option,
+      extraOptions: extraOptions,
+      extraEnabled: extraEnabled,
+    });
+  };
+
   const getAccuracy = () => {
     const accuracy = (1 - totalIncorrect / totalTyped) * 100;
     return accuracy;
   };
 
+  useEffect(() => {
+    if (restartFocus) {
+      restartRef.current.focus();
+    }
+  }, [restartFocus]);
+
+  window.addEventListener("keydown", (e) => {
+    if (e.isComposing || e.key === "Tab") {
+      e.preventDefault();
+
+      if (e.repeat) return;
+      if (!restartFocus) {
+        restartRef.current.focus();
+        setRestartFocus(true);
+      }
+    }
+    // do something
+  });
+
   if (option == undefined) return <></>;
 
   return (
-    <div className="game">
+    <div className="game" style={{ opacity: gameOpacity }}>
       <div
         className={`game_container ${
           gameStatus === "finished" ? "hidden" : ""
@@ -195,6 +248,7 @@ export default function Game() {
           startGame={start}
           endGame={end}
           gameStatus={gameStatus}
+          setGameStatus={setGameStatus}
           currWordIndex={currWordIndex}
           setCurrWordIndex={setCurrWordIndex}
           words={words}
@@ -204,12 +258,6 @@ export default function Game() {
           totalIncorrect={totalIncorrect}
           setTotalIncorrect={setTotalIncorrect}
         />
-        <button
-          className="restart_btn"
-          style={{ opacity: `${gameStatus === "running" ? "1" : "0"}` }}
-        >
-          <i class="fa-solid fa-rotate-right"></i>
-        </button>
       </div>
       {gameStatus === "finished" && (
         <div className={`results`}>
@@ -242,6 +290,17 @@ export default function Game() {
             </div>
           </div>
         </div>
+      )}
+      {gameStatus !== "hi" && (
+        <button
+          className="restart_btn"
+          ref={restartRef}
+          onClick={restart}
+          onKeyDown={(e) => (e.key === "Enter" ? restart() : e.target.blur())}
+          // style={{ opacity: `${gameStatus !== "waiting" ? "1" : "0"}` }}
+        >
+          <i className="fa-solid fa-rotate-right"></i>
+        </button>
       )}
     </div>
   );
