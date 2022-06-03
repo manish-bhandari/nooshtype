@@ -58,8 +58,7 @@ export default function Game() {
   }, [gameOpacity]);
 
   useEffect(() => {
-    if (configs == undefined) return;
-    console.log(configs);
+    if (configs === undefined) return;
     const mywords = getWords(configs);
     setWords(
       mywords.map((word) =>
@@ -138,7 +137,7 @@ export default function Game() {
 
   useEffect(() => {
     let interval = null;
-    if (gameStatus === "running" && gamemode == "time") {
+    if (gameStatus === "running" && gamemode === "time") {
       interval = setInterval(() => {
         setTimer((prevTimer) => {
           if (prevTimer === 0) {
@@ -151,7 +150,7 @@ export default function Game() {
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [gameStatus]);
+  }, [gameStatus, gamemode]);
 
   // Stopwatch to how much time elapsed
   useEffect(() => {
@@ -173,6 +172,8 @@ export default function Game() {
 
     setrawWPM(gross_wpm.toFixed(2));
     setNetWPM(net_wpm.toFixed(2));
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stopwatch]);
 
   const end = () => {
@@ -225,7 +226,7 @@ export default function Game() {
   window.addEventListener("keyup", testCapsLock);
   window.addEventListener("keydown", testCapsLock);
 
-  if (configs == undefined || words == undefined) return <></>;
+  if (configs === undefined || words === undefined) return <></>;
 
   return (
     <div className="game" style={{ opacity: gameOpacity }}>
@@ -238,7 +239,7 @@ export default function Game() {
           <div className="options item">
             {options[gamemode].map((opt, index) => (
               <div
-                className={`option ${configs.option == opt ? "active" : ""}`}
+                className={`option ${configs.option === opt ? "active" : ""}`}
                 onClick={() => {
                   updateOption(opt);
                 }}
@@ -265,7 +266,7 @@ export default function Game() {
             <div className="gamemodes item">
               {gamemodes.map((mode, index) => (
                 <div
-                  className={`gamemode ${gamemode == mode ? "active" : ""}`}
+                  className={`gamemode ${gamemode === mode ? "active" : ""}`}
                   key={index}
                   onClick={() => setGamemode(mode)}
                 >

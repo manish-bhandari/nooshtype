@@ -7,11 +7,9 @@ import {
   findNumBlanks,
   getWordLength,
   isWordCorrect,
-  getLengthTillWrapping,
   getEndOfFirstLine,
   getWordsWrappingStates,
 } from "../Utils/utils";
-import { getWords } from "../Utils/Words";
 
 export default function Words({
   configs,
@@ -32,8 +30,6 @@ export default function Words({
   setTotalCorrectUncor,
 }) {
   const [opacity, setOpacity] = useState(0);
-
-  const [wordsLoaded, setWordsLoaded] = useState(false);
 
   const [currWordCharIndex, setCurrWordCharIndex] = useState(undefined);
 
@@ -57,11 +53,11 @@ export default function Words({
     setWordsCorrectness(new Array(words.length).fill(""));
     setCurrWordCharIndex(0);
     setCurrWordIndex(0);
-    setWordsLoaded(false);
     setPrintFrom(0);
     setStarted(false);
     setCurrLine(1);
     setVisibleLine(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [configs]);
 
   // fade in when new words come
@@ -75,7 +71,7 @@ export default function Words({
 
   // make caret blink on idle
   useEffect(() => {
-    if (currWordCharIndex == undefined) return;
+    if (currWordCharIndex === undefined) return;
     const timeout = setTimeout(() => {
       setCaretState("blink");
     }, 2500);
@@ -100,7 +96,7 @@ export default function Words({
     const parent_top = container.getBoundingClientRect().top;
     const parent_left = container.getBoundingClientRect().left;
 
-    if (currWordIndex == words.length) {
+    if (currWordIndex === words.length) {
       const currWordNode = document.querySelector("#words").lastChild.children;
       let currentLetter = currWordNode[currWordNode.length - 1];
       if (!currentLetter) return;
@@ -137,6 +133,7 @@ export default function Words({
 
   useEffect(() => {
     adjustNewLineWords();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currWordIndex]);
 
   const adjustNewLineWords = () => {
@@ -158,31 +155,26 @@ export default function Words({
 
   useEffect(() => {
     if (
-      currWordIndex == words.length - 1 &&
-      currWordCharIndex == words[currWordIndex].length &&
+      currWordIndex === words.length - 1 &&
+      currWordCharIndex === words[currWordIndex].length &&
       words[currWordIndex][currWordCharIndex - 1].state === "correct"
     ) {
       endGame();
       return;
     }
     updateCaret();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currWordIndex, currWordCharIndex]);
 
-  useEffect(() => {
-    if (words != undefined) {
-      setWordsLoaded(true);
-    }
-  }, [words]);
-
   useKeyPress((key) => {
-    if (gameStatus == "finished") return;
+    if (gameStatus === "finished") return;
 
-    if (key == " ") {
+    if (key === " ") {
       // check if need to go to next line
       const needsToWrap = wordsWrapState[currWordIndex];
 
       if (needsToWrap) {
-        if (visibleLine == 2) {
+        if (visibleLine === 2) {
           scrollWords();
         } else {
           setVisibleLine(visibleLine + 1);
@@ -191,9 +183,9 @@ export default function Words({
       }
 
       // if pressing space before the word is done
-      if (currWordCharIndex != getWordLength(words[currWordIndex])) {
+      if (currWordCharIndex !== getWordLength(words[currWordIndex])) {
         // pressing space anywhere except the beginning
-        if (currWordCharIndex != 0) {
+        if (currWordCharIndex !== 0) {
           let arr = [...wordsCorrectness];
           const isCorrect = isWordCorrect(words[currWordIndex]);
           arr[currWordIndex] = isCorrect ? "" : "incorrect";
@@ -214,7 +206,7 @@ export default function Words({
           ? ""
           : "incorrect";
 
-        if (currWordIndex == words.length - 1) {
+        if (currWordIndex === words.length - 1) {
           endGame();
           return;
         }
@@ -224,17 +216,17 @@ export default function Words({
         setTotalTyped(totalTyped + 1);
       }
     } else if (key === "Backspace") {
-      if (currWordCharIndex == 0) {
+      if (currWordCharIndex === 0) {
         // check if going to previous line
-        if (currWordIndex != printFrom && wordsWrapState[currWordIndex - 1]) {
+        if (currWordIndex !== printFrom && wordsWrapState[currWordIndex - 1]) {
           setVisibleLine(visibleLine - 1);
         }
-        if (currWordIndex != printFrom) {
+        if (currWordIndex !== printFrom) {
           const numBlanks = findNumBlanks(words[currWordIndex - 1]);
           setCurrWordIndex(currWordIndex - 1);
           setCurrWordCharIndex(words[currWordIndex - 1].length - numBlanks);
           wordsCorrectness[currWordIndex - 1] = "correct";
-        } else if (currWordIndex == 0 && currWordCharIndex != 0) {
+        } else if (currWordIndex === 0 && currWordCharIndex !== 0) {
           setCurrWordCharIndex(words[currWordIndex - 1].length);
         }
       } else {
@@ -255,12 +247,12 @@ export default function Words({
       }
     }
     // Letters are pressed
-    else if (key.length == 1) {
+    else if (key.length === 1) {
       // START THE GAME WHEN FIRST KEY PRESSED
       if (!started) setStarted(true);
 
       if (
-        findCurrentCharIndex(currWordCharIndex, words[currWordIndex]) !=
+        findCurrentCharIndex(currWordCharIndex, words[currWordIndex]) !==
         getWordLength(words[currWordIndex])
       ) {
         const isCorrect =
@@ -286,14 +278,14 @@ export default function Words({
     }
   });
 
-  /* === ENDS GAME IF CURR WORD IS OUT OF BOUNDS ===*/
   useEffect(() => {
-    if (currWordIndex == words.length) endGame();
+    if (currWordIndex === words.length) endGame();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [caretPosLeft]);
 
-  /* === START GAME ===*/
   useEffect(() => {
     if (started) startGame();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [started]);
 
   return (
@@ -309,7 +301,7 @@ export default function Words({
             return (
               <div
                 className={`word ${wordsCorrectness[index]} ${
-                  index == currWordIndex ? "active" : ""
+                  index === currWordIndex ? "active" : ""
                 }`}
                 key={index}
               >
