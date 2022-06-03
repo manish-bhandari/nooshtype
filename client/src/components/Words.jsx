@@ -70,11 +70,16 @@ export default function Words({
 
   // fade in when new words come
   useEffect(() => {
-    if (opacity >= 1) return;
+    if (opacity >= 1) {
+      updateCaret();
+      return;
+    }
     const timer = setInterval(() => {
       setOpacity(opacity + 0.1);
     }, 50);
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+    };
   }, [opacity]);
 
   // make caret blink on idle
@@ -299,7 +304,7 @@ export default function Words({
   return (
     <div className="words_wrapper" style={{ opacity: `${opacity}` }}>
       <div>
-        {wordsLoaded && (
+        {gameStatus === "waiting" && (
           <div
             className={`caret ${caretState}`}
             style={{ top: `${caretPosTop}px`, left: `${caretPosLeft}px` }}
