@@ -140,7 +140,7 @@ export default function Game() {
     if (gameStatus === "running" && gamemode === "time") {
       interval = setInterval(() => {
         setTimer((prevTimer) => {
-          if (prevTimer === 0) {
+          if (prevTimer === 1) {
             end();
             clearInterval(interval);
           } else {
@@ -184,6 +184,12 @@ export default function Game() {
     setGameStatus("waiting");
     restartRef.current.blur();
     setGameOpacity(0);
+    setStopwatch(0);
+    setNetWPM(0);
+    setTotalTyped(0);
+    setTotalIncorrect(0);
+    setTotalCorrectUncor(0);
+    setTotalUncor(0);
     setConfigs({
       gamemode: gamemode,
       option: configs.option,
