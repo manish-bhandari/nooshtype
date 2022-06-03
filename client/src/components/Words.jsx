@@ -64,6 +64,7 @@ export default function Words({
   useEffect(() => {
     console.log(wordsLoaded);
     if (wordsLoaded) {
+      console.log("words loaded and update caret");
       updateCaret();
     }
   }, [wordsLoaded]);

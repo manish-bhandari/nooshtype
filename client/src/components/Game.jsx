@@ -74,7 +74,6 @@ export default function Game() {
   useEffect(() => {
     if (words !== undefined) {
       console.log("words loaded");
-
       setWordsLoaded(true);
     }
   }, [words]);
@@ -316,6 +315,7 @@ export default function Game() {
             configs={configs}
             startGame={start}
             endGame={end}
+            wordsLoaded={wordsLoaded}
             gameStatus={gameStatus}
             setGameStatus={setGameStatus}
             currWordIndex={currWordIndex}
