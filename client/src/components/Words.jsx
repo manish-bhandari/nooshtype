@@ -28,6 +28,7 @@ export default function Words({
   setTotalUncor,
   totalCorrectUncor,
   setTotalCorrectUncor,
+  wordsLoaded,
 }) {
   const [opacity, setOpacity] = useState(0);
 
@@ -47,10 +48,7 @@ export default function Words({
   const wordsContainer = useRef(null);
   const [started, setStarted] = useState(false);
 
-  const [wordsLoaded, setWordsLoaded] = useState(false);
-
   useEffect(() => {
-    setWordsLoaded(false);
     setOpacity(0);
     setWordsWrapState(new Array(words.length).fill(false));
     setWordsCorrectness(new Array(words.length).fill(""));
@@ -64,6 +62,7 @@ export default function Words({
   }, [configs]);
 
   useEffect(() => {
+    console.log(wordsLoaded);
     if (wordsLoaded) {
       updateCaret();
     }
@@ -304,6 +303,7 @@ export default function Words({
           className={`caret ${caretState}`}
           style={{ top: `${caretPosTop}px`, left: `${caretPosLeft}px` }}
         ></div>
+
         <div id="words" className="words" ref={wordsContainer}>
           {words.slice(printFrom, words.length).map((word, index) => {
             index = index + printFrom;
