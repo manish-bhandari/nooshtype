@@ -62,7 +62,6 @@ export default function Words({
   }, [configs]);
 
   useEffect(() => {
-    console.log(wordsLoaded);
     if (wordsLoaded) {
       console.log("words loaded and update caret");
       updateCaret();
@@ -300,10 +299,12 @@ export default function Words({
   return (
     <div className="words_wrapper" style={{ opacity: `${opacity}` }}>
       <div>
-        <div
-          className={`caret ${caretState}`}
-          style={{ top: `${caretPosTop}px`, left: `${caretPosLeft}px` }}
-        ></div>
+        {wordsLoaded && (
+          <div
+            className={`caret ${caretState}`}
+            style={{ top: `${caretPosTop}px`, left: `${caretPosLeft}px` }}
+          ></div>
+        )}
 
         <div id="words" className="words" ref={wordsContainer}>
           {words.slice(printFrom, words.length).map((word, index) => {
