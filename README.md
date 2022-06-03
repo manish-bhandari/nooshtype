@@ -1,2 +1,4 @@
+## (Work In Progress)
 # nooshtype
-A typing game.
+A minimalistic typing game.
+
