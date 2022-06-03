@@ -48,7 +48,6 @@ export default function Game() {
   const [totalCorrectUncor, setTotalCorrectUncor] = useState(0);
 
   const [capsLock, setCapsLock] = useState(false);
-  const [wordsLoaded, setWordsLoaded] = useState(false);
 
   useEffect(() => {
     if (gameOpacity >= 1) return;
@@ -60,7 +59,6 @@ export default function Game() {
 
   useEffect(() => {
     if (configs === undefined) return;
-    setWordsLoaded(false);
     const mywords = getWords(configs);
     setWords(
       mywords.map((word) =>
@@ -70,19 +68,6 @@ export default function Game() {
       )
     );
   }, [configs]);
-
-  useEffect(() => {
-    if (words !== undefined) {
-      console.log("words loaded");
-      setWordsLoaded(true);
-    }
-  }, [words]);
-
-  useEffect(() => {
-    if (words !== undefined) {
-      setWordsLoaded(true);
-    }
-  }, [words]);
 
   useEffect(() => {
     // const settingsStorage = localStorage.getItem("modes");
@@ -315,7 +300,6 @@ export default function Game() {
             configs={configs}
             startGame={start}
             endGame={end}
-            wordsLoaded={wordsLoaded}
             gameStatus={gameStatus}
             setGameStatus={setGameStatus}
             currWordIndex={currWordIndex}

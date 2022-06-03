@@ -28,7 +28,6 @@ export default function Words({
   setTotalUncor,
   totalCorrectUncor,
   setTotalCorrectUncor,
-  wordsLoaded,
 }) {
   const [opacity, setOpacity] = useState(0);
 
@@ -44,12 +43,14 @@ export default function Words({
   const [printFrom, setPrintFrom] = useState(0);
   const [currLine, setCurrLine] = useState(1);
   const [visibleLine, setVisibleLine] = useState(1);
+  const [wordsLoaded, setWordsLoaded] = useState(false);
 
   const wordsContainer = useRef(null);
   const [started, setStarted] = useState(false);
 
   useEffect(() => {
     setOpacity(0);
+    setWordsLoaded(false);
     setWordsWrapState(new Array(words.length).fill(false));
     setWordsCorrectness(new Array(words.length).fill(""));
     setCurrWordCharIndex(0);
@@ -61,17 +62,10 @@ export default function Words({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [configs]);
 
-  useEffect(() => {
-    if (wordsLoaded) {
-      console.log("words loaded and update caret");
-      updateCaret();
-    }
-  }, [wordsLoaded]);
-
   // fade in when new words come
   useEffect(() => {
     if (opacity >= 1) {
-      updateCaret();
+      setWordsLoaded(true);
       return;
     }
     const timer = setInterval(() => {
@@ -93,6 +87,11 @@ export default function Words({
       setCaretState("");
     };
   }, [currWordCharIndex]);
+
+  useEffect(() => {
+    if (wordsLoaded) updateCaret();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wordsLoaded]);
 
   const scrollWords = () => {
     const firstLineEndIndex = getEndOfFirstLine(wordsWrapState, printFrom);
@@ -304,7 +303,7 @@ export default function Words({
   return (
     <div className="words_wrapper" style={{ opacity: `${opacity}` }}>
       <div>
-        {gameStatus === "waiting" && (
+        {wordsLoaded && (
           <div
             className={`caret ${caretState}`}
             style={{ top: `${caretPosTop}px`, left: `${caretPosLeft}px` }}
