@@ -47,7 +47,10 @@ export default function Words({
   const wordsContainer = useRef(null);
   const [started, setStarted] = useState(false);
 
+  const [wordsLoaded, setWordsLoaded] = useState(false);
+
   useEffect(() => {
+    setWordsLoaded(false);
     setOpacity(0);
     setWordsWrapState(new Array(words.length).fill(false));
     setWordsCorrectness(new Array(words.length).fill(""));
@@ -59,6 +62,12 @@ export default function Words({
     setVisibleLine(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [configs]);
+
+  useEffect(() => {
+    if (wordsLoaded) {
+      updateCaret();
+    }
+  }, [wordsLoaded]);
 
   // fade in when new words come
   useEffect(() => {
