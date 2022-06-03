@@ -14,6 +14,7 @@
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  position: relative;
 }
 
 .game .restart_btn {
@@ -54,6 +55,18 @@
       -ms-flex-pack: center;
           justify-content: center;
   margin-bottom: 50px;
+  position: relative;
+}
+
+.capslock {
+  position: absolute;
+  background-color: var(--main-color);
+  padding: 15px;
+  border-radius: 10px;
+  top: 0px;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
 }
 
 .header {

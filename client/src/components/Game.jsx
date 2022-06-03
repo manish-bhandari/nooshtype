@@ -47,6 +47,8 @@ export default function Game() {
   const [totalUncor, setTotalUncor] = useState(0);
   const [totalCorrectUncor, setTotalCorrectUncor] = useState(0);
 
+  const [capsLock, setCapsLock] = useState(false);
+
   useEffect(() => {
     if (gameOpacity >= 1) return;
     const timer = setInterval(() => {
@@ -214,13 +216,19 @@ export default function Game() {
     }
   });
 
+  function testCapsLock(event) {
+    if (event.code === "CapsLock") {
+      let isCapsLockOn = event.getModifierState("CapsLock");
+      setCapsLock(isCapsLockOn);
+    }
+  }
+  window.addEventListener("keyup", testCapsLock);
+  window.addEventListener("keydown", testCapsLock);
+
   if (configs == undefined || words == undefined) return <></>;
 
   return (
     <div className="game" style={{ opacity: gameOpacity }}>
-      {/* <h1
-        style={{ color: "white" }}
-      >{`${totalTyped} - ${totalIncorrect}) / 5 / (${stopwatch} / 60`}</h1> */}
       <div
         className={`game_container ${
           gameStatus === "finished" ? "hidden" : ""
@@ -275,25 +283,32 @@ export default function Game() {
             <p className="status">{Math.round(netWPM)}</p>
           </div>
         )}
-        <Words
-          configs={configs}
-          startGame={start}
-          endGame={end}
-          gameStatus={gameStatus}
-          setGameStatus={setGameStatus}
-          currWordIndex={currWordIndex}
-          setCurrWordIndex={setCurrWordIndex}
-          words={words}
-          setWords={setWords}
-          totalTyped={totalTyped}
-          setTotalTyped={setTotalTyped}
-          totalIncorrect={totalIncorrect}
-          setTotalIncorrect={setTotalIncorrect}
-          totalUncor={totalUncor}
-          setTotalUncor={setTotalUncor}
-          totalCorrectUncor={totalCorrectUncor}
-          setTotalCorrectUncor={setTotalCorrectUncor}
-        />
+        <div className="words_container">
+          {capsLock && (
+            <div className="capslock">
+              <i className="fa-solid fa-lock"></i> Caps Lock
+            </div>
+          )}
+          <Words
+            configs={configs}
+            startGame={start}
+            endGame={end}
+            gameStatus={gameStatus}
+            setGameStatus={setGameStatus}
+            currWordIndex={currWordIndex}
+            setCurrWordIndex={setCurrWordIndex}
+            words={words}
+            setWords={setWords}
+            totalTyped={totalTyped}
+            setTotalTyped={setTotalTyped}
+            totalIncorrect={totalIncorrect}
+            setTotalIncorrect={setTotalIncorrect}
+            totalUncor={totalUncor}
+            setTotalUncor={setTotalUncor}
+            totalCorrectUncor={totalCorrectUncor}
+            setTotalCorrectUncor={setTotalCorrectUncor}
+          />
+        </div>
       </div>
       {gameStatus === "finished" && (
         <div className={`results`}>

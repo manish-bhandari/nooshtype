@@ -9,6 +9,7 @@ const useKeyPress = (callback) => {
     //4
     const downHandler = ({ key }) => {
       if (keyPressed !== key) {
+        console.log(key);
         setKeyPressed(key);
         callback && callback(key);
       }

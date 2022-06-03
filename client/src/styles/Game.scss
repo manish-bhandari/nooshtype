@@ -5,6 +5,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
 
   .restart_btn {
     margin-left: auto;
@@ -37,6 +38,17 @@
   flex-direction: column;
   justify-content: center;
   margin-bottom: 50px;
+  position: relative;
+}
+
+.capslock {
+  position: absolute;
+  background-color: var(--main-color);
+  padding: 15px;
+  border-radius: 10px;
+  top: 0px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .header {

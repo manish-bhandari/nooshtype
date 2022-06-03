@@ -49,7 +49,6 @@ export default function Words({
   const [visibleLine, setVisibleLine] = useState(1);
 
   const wordsContainer = useRef(null);
-
   const [started, setStarted] = useState(false);
 
   useEffect(() => {
@@ -97,12 +96,18 @@ export default function Words({
       ?.querySelector("#words .active")
       ?.querySelectorAll(".letter");
 
+    const container = document?.querySelector(".game_container");
+    const parent_top = container.getBoundingClientRect().top;
+    const parent_left = container.getBoundingClientRect().left;
+
     if (currWordIndex == words.length) {
       const currWordNode = document.querySelector("#words").lastChild.children;
       let currentLetter = currWordNode[currWordNode.length - 1];
       if (!currentLetter) return;
 
-      const { top, left } = currentLetter.getBoundingClientRect();
+      let { top, left } = currentLetter.getBoundingClientRect();
+      top -= parent_top;
+      left -= parent_left;
       setCaretPosTop(top - 3);
       setCaretPosLeft(left + 17.4);
     }
@@ -113,12 +118,18 @@ export default function Words({
 
     if (currWordCharIndex >= getWordLength(words[currWordIndex])) {
       let currentLetter = currentWordNodeList[currWordCharIndex - 1];
-      const { top, left } = currentLetter.getBoundingClientRect();
+      let { top, left } = currentLetter.getBoundingClientRect();
+      top -= parent_top;
+      left -= parent_left;
+
       setCaretPosTop(top - 3);
       setCaretPosLeft(left + 17.4);
     } else {
       let currentLetter = currentWordNodeList[currWordCharIndex];
-      const { top, left } = currentLetter.getBoundingClientRect();
+      let { top, left } = currentLetter.getBoundingClientRect();
+      top -= parent_top;
+      left -= parent_left;
+
       setCaretPosTop(top - 3);
       setCaretPosLeft(left);
     }
@@ -287,30 +298,32 @@ export default function Words({
 
   return (
     <div className="words_wrapper" style={{ opacity: `${opacity}` }}>
-      <div
-        className={`caret ${caretState}`}
-        style={{ top: `${caretPosTop}px`, left: `${caretPosLeft}px` }}
-      ></div>
-      <div id="words" className="words" ref={wordsContainer}>
-        {words.slice(printFrom, words.length).map((word, index) => {
-          index = index + printFrom;
-          return (
-            <div
-              className={`word ${wordsCorrectness[index]} ${
-                index == currWordIndex ? "active" : ""
-              }`}
-              key={index}
-            >
-              {word.map((letter, index) => {
-                return (
-                  <span className={`letter ${letter.state}`} key={index}>
-                    {letter.letter}
-                  </span>
-                );
-              })}
-            </div>
-          );
-        })}
+      <div>
+        <div
+          className={`caret ${caretState}`}
+          style={{ top: `${caretPosTop}px`, left: `${caretPosLeft}px` }}
+        ></div>
+        <div id="words" className="words" ref={wordsContainer}>
+          {words.slice(printFrom, words.length).map((word, index) => {
+            index = index + printFrom;
+            return (
+              <div
+                className={`word ${wordsCorrectness[index]} ${
+                  index == currWordIndex ? "active" : ""
+                }`}
+                key={index}
+              >
+                {word.map((letter, index) => {
+                  return (
+                    <span className={`letter ${letter.state}`} key={index}>
+                      {letter.letter}
+                    </span>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
